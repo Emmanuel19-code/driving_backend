@@ -1,16 +1,22 @@
 import {} from "dotenv/config";
 import app from "./app.js";
-import sequelize from "./config/db.js";
+import initializeDatabase from "./config/db.js";
+import { registerModels } from "./models/index.js";
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 5000;
 const startServer = async () => {
   try {
+    const sequelize = await initializeDatabase()
     await sequelize.authenticate();
-    await sequelize.sync({alter:true});
+    await sequelize.sync();
+    registerModels(sequelize)
+    
     app.listen(PORT, () => {
       console.log(`🚀 Server is running at http://localhost:${PORT}`);
     });
-  } catch (error) {}
+  } catch (error) {
+    console.error("❌ Failed to start server:", error); 
+  }
 };
 
 startServer();

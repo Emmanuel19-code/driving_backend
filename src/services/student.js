@@ -1,18 +1,22 @@
-import Student from "../models/student.js";
+import {studentModel} from "../models/index.js"
 
 
 export const findStudentByEmail = async (email) => {
-  return await Student.findOne({ where: { email } });
+  return await studentModel.findOne({ where: { email } });
 };
 
 export const createStudent = async (studentData) => {
-  return await Student.create(studentData);
+  return await studentModel.create(studentData);
 };
 
 export const getStudent = async (studentId) =>{
-   return await Student.findOne({where:{studentId}})
+   return await studentModel.findOne({where:{studentId}})
 }
 
 export const allStudents = async () =>{
-    return await Student.findAll();
+    return await studentModel.findAll();
+}
+
+export const searchStudent = async ()=>{
+  
 }

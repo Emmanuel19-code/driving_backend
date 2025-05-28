@@ -3,10 +3,12 @@ import {
   createStudent,
   findStudentByEmail,
   getStudent,
-} from "../services/student";
+  searchStudent,
+} from "../services/student.js";
+import { studentSchema } from "../validations/student.js";
 
 export const registerStudent = async (req, res) => {
-  try {
+  try {  
     const { error, value } = studentSchema.validate(req.body);
     if (error) {
       return res.status(400).json({ error: error.details[0].message });
@@ -19,14 +21,15 @@ export const registerStudent = async (req, res) => {
     }
     const student = await createStudent(value);
   } catch (error) {
+    console.log(error);
     res.status(500).json({ error: "Internal server error" });
   }
 };
 
 export const fetchStudent = async (req, res) => {
   try {
-    const { studentId } = req.body;
-    const student = await getStudent(studentId);
+    const name = req.query.name;
+    const student = await searchStudent();
   } catch (error) {
     res.status(500).json({error:'Internal server error'})
   }
@@ -35,6 +38,7 @@ export const fetchStudent = async (req, res) => {
 export const fetchAllStudent = async (req,res) =>{
   try {
     const student = await allStudents();
+    res.status(200).json({data:student})
   } catch (error) {
     res.status(500).json({error:'Internal Server error'})
   }
