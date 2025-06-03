@@ -21,7 +21,7 @@ export const registerStudent = async (req, res) => {
     }
     const student = await createStudent(value);
   } catch (error) {
-    console.log(error);
+    //console.log(error);
     res.status(500).json({ error: "Internal server error" });
   }
 };

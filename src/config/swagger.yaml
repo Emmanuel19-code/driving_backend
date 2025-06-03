@@ -1,0 +1,269 @@
+openapi: 3.0.0
+info:
+  title: Driving API Documentation
+  version: 1.0.0
+  description: API for managing student records
+
+tags:
+  - name: Students
+  - name: Company Services
+
+paths:
+  /api/v1/students/add_student:
+    post:
+      summary: Add a new student
+      description: Create a new student record in the system
+      tags:
+        - Students
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - firstName
+                - lastName
+                - gender
+                - email
+                - serviceType
+              properties:
+                firstName:
+                  type: string
+                  example: John
+                lastName:
+                  type: string
+                  example: Doe
+                otherName:
+                  type: string
+                  example: Michael
+                gender:
+                  type: string
+                  enum: [Male, Female]
+                  example: Male
+                email:
+                  type: string
+                  format: email
+                  example: john.doe@example.com
+                phoneOne:
+                  type: string
+                  example: "08012345678"
+                phoneTwo:
+                  type: string
+                  example: "08098765432"
+                serviceType:
+                  type: string
+                  example: Driving Lesson
+      responses:
+        '201':
+          description: Student created successfully
+        '400':
+          description: Invalid input
+        '500':
+          description: Server error
+
+  /api/v1/students/fetch_students:
+    get:
+      summary: Fetch all students
+      description: Retrieve a list of all registered students
+      tags:
+        - Students
+      responses:
+        '200':
+          description: A list of students
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    studentId:
+                      type: string
+                      example: STU2024-001
+                    firstName:
+                      type: string
+                      example: John
+                    lastName:
+                      type: string
+                      example: Doe
+                    otherName:
+                      type: string
+                      example: Michael
+                    gender:
+                      type: string
+                      example: Male
+                    email:
+                      type: string
+                      example: john.doe@example.com
+                    phoneOne:
+                      type: string
+                      example: "08012345678"
+                    phoneTwo:
+                      type: string
+                      example: "08098765432"
+                    serviceType:
+                      type: string
+                      example: Driving Lesson
+                    createdAt:
+                      type: string
+                      format: date-time
+                      example: 2024-05-20T10:00:00Z
+                    updatedAt:
+                      type: string
+                      format: date-time
+                      example: 2024-05-21T14:30:00Z
+        '500':
+          description: Server error
+
+  /api/v1/students/search_student:
+    get:
+      summary: Search for students
+      description: Search students by name, email, or other criteria
+      tags:
+        - Students
+      parameters:
+        - in: query
+          name: firstName
+          schema:
+            type: string
+          description: Filter by first name
+        - in: query
+          name: lastName
+          schema:
+            type: string
+          description: Filter by last name
+        - in: query
+          name: email
+          schema:
+            type: string
+            format: email
+          description: Filter by email address
+        - in: query
+          name: serviceType
+          schema:
+            type: string
+          description: Filter by service type
+      responses:
+        '200':
+          description: Matching students found
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    studentId:
+                      type: string
+                      example: STU2024-001
+                    firstName:
+                      type: string
+                      example: John
+                    lastName:
+                      type: string
+                      example: Doe
+                    otherName:
+                      type: string
+                      example: Michael
+                    gender:
+                      type: string
+                      example: Male
+                    email:
+                      type: string
+                      example: john.doe@example.com
+                    phoneOne:
+                      type: string
+                      example: "08012345678"
+                    phoneTwo:
+                      type: string
+                      example: "08098765432"
+                    serviceType:
+                      type: string
+                      example: Driving Lesson
+                    createdAt:
+                      type: string
+                      format: date-time
+                    updatedAt:
+                      type: string
+                      format: date-time
+        '400':
+          description: Invalid search criteria
+        '500':
+          description: Server error
+
+  /api/v1/services/add_newService:
+    post:
+      summary: Add a new Company Service
+      description: Add a service offered by the organization
+      tags:
+        - Company Services
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - serviceType
+                - serviceDescription
+                - fee
+                - duration
+              properties:
+                serviceType:
+                  type: string
+                  example: Driving Test Preparation
+                serviceDescription:
+                  type: string
+                  example: An intensive course to prepare students for the road test.
+                fee:
+                  type: string
+                  example: "15000"
+                duration:
+                  type: string
+                  example: 4 weeks
+      responses:
+        '201':
+          description: Service created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Service added successfully
+                  data:
+                    type: object
+                    properties:
+                      serviceId:
+                        type: string
+                        example: SVC-54893
+                      serviceType:
+                        type: string
+                        example: Driving Test Preparation
+                      serviceDescription:
+                        type: string
+                        example: An intensive course to prepare students for the road test.
+                      fee:
+                        type: string
+                        example: "15000"
+                      duration:
+                        type: string
+                        example: 4 weeks
+                      createdAt:
+                        type: string
+                        format: date-time
+                        example: 2025-06-03T10:20:00Z
+                      updatedAt:
+                        type: string
+                        format: date-time
+                        example: 2025-06-03T10:20:00Z
+        '400':
+          description: Invalid input
+        '409':
+          description: Service already exists
+        '500':
+          description: Server error
+
+

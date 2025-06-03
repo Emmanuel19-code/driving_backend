@@ -2,20 +2,19 @@ import InstructorModel from "./Instructor.js";
 import StudentModel from "./Student.js";
 import StudentIdCounterModel from "./StudentIdCounter.js";
 import InstructorIdCounterModel from "./InstructorIdCounter.js";
+import serviceModel from "./services.js";
 
 let studentModel;
 let instructorModel;
-
-export const registerModels = (sequelize) => {
-  //console.log("Registering models...",sequelize);
+let studentIdCounter;
+let serviceModels;
+export const registerModels = (sequelize) => {  
   const StudentIdCounter = StudentIdCounterModel(sequelize);
-  
   const InstructorIdCounter = InstructorIdCounterModel(sequelize);
-
+  serviceModels = serviceModel(sequelize);
   studentModel = StudentModel(sequelize, StudentIdCounter);
   instructorModel = InstructorModel(sequelize, InstructorIdCounter);
-  console.log("stdm",studentModel);
-  console.log("intm",instructorModel)
+  studentIdCounter = StudentIdCounter;
 };
 
-export  {studentModel,instructorModel}
+export  {studentModel,instructorModel,studentIdCounter,serviceModels}

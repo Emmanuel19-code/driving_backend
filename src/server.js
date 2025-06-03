@@ -2,6 +2,7 @@ import {} from "dotenv/config";
 import app from "./app.js";
 import initializeDatabase from "./config/db.js";
 import { registerModels } from "./models/index.js";
+import { swaggerDocs } from "./config/swagger.js";
 
 const PORT = process.env.PORT || 5000;
 const startServer = async () => {
@@ -12,6 +13,7 @@ const startServer = async () => {
     registerModels(sequelize)
     
     app.listen(PORT, () => {
+      swaggerDocs(app,PORT)
       console.log(`🚀 Server is running at http://localhost:${PORT}`);
     });
   } catch (error) {

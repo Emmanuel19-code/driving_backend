@@ -1,4 +1,4 @@
-import {studentModel} from "../models/index.js"
+import {studentModel,studentIdCounter} from "../models/index.js"
 
 
 export const findStudentByEmail = async (email) => {
@@ -15,6 +15,10 @@ export const getStudent = async (studentId) =>{
 
 export const allStudents = async () =>{
     return await studentModel.findAll();
+}
+
+export const countStudents = async()=>{
+  return await studentIdCounter.findAll()
 }
 
 export const searchStudent = async ()=>{
