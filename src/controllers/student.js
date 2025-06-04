@@ -1,3 +1,4 @@
+import logger from "../config/logger.js";
 import {
   allStudents,
   createStudent,
@@ -20,8 +21,13 @@ export const registerStudent = async (req, res) => {
       });
     }
     const student = await createStudent(value);
+    if(!student)
+    {
+      return res.status(409).json({msg:"Student Could not be added"})
+    }
+    res.status(201).json({msg:"Student Created"})
   } catch (error) {
-    //console.log(error);
+    logger.error(error)
     res.status(500).json({ error: "Internal server error" });
   }
 };
@@ -31,6 +37,7 @@ export const fetchStudent = async (req, res) => {
     const name = req.query.name;
     const student = await searchStudent();
   } catch (error) {
+    logger.error(error)
     res.status(500).json({error:'Internal server error'})
   }
 };
@@ -40,6 +47,7 @@ export const fetchAllStudent = async (req,res) =>{
     const student = await allStudents();
     res.status(200).json({data:student})
   } catch (error) {
+    logger.error(error)
     res.status(500).json({error:'Internal Server error'})
   }
 }
