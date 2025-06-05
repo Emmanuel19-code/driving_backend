@@ -7,9 +7,10 @@ import {
   searchStudent,
 } from "../services/student.js";
 import { studentSchema } from "../validations/student.js";
+import { serviceModels } from "../models/index.js";
 
 export const registerStudent = async (req, res) => {
-  try {  
+  try {
     const { error, value } = studentSchema.validate(req.body);
     if (error) {
       return res.status(400).json({ error: error.details[0].message });
@@ -20,14 +21,21 @@ export const registerStudent = async (req, res) => {
         msg: "An account is registered with this email",
       });
     }
-    const student = await createStudent(value);
-    if(!student)
-    {
-      return res.status(409).json({msg:"Student Could not be added"})
+    const service = await serviceModels.findOne({
+      where: { serviceId: value.serviceId },
+    });
+    if (!service) {
+      return res.status(400).json({
+        msg: "Service is not registered",
+      });
     }
-    res.status(201).json({msg:"Student Created"})
+    const student = await createStudent(value, service);
+    if (!student) {
+      return res.status(409).json({ msg: "Student Could not be added" });
+    }
+    res.status(201).json({ msg: "Student Created" });
   } catch (error) {
-    logger.error(error)
+    logger.error(error);
     res.status(500).json({ error: "Internal server error" });
   }
 };
@@ -37,17 +45,17 @@ export const fetchStudent = async (req, res) => {
     const name = req.query.name;
     const student = await searchStudent();
   } catch (error) {
-    logger.error(error)
-    res.status(500).json({error:'Internal server error'})
+    logger.error(error);
+    res.status(500).json({ error: "Internal server error" });
   }
 };
 
-export const fetchAllStudent = async (req,res) =>{
+export const fetchAllStudent = async (req, res) => {
   try {
     const student = await allStudents();
-    res.status(200).json({data:student})
+    res.status(200).json({ data: student });
   } catch (error) {
-    logger.error(error)
-    res.status(500).json({error:'Internal Server error'})
+    logger.error(error);
+    res.status(500).json({ error: "Internal Server error" });
   }
-}
+};

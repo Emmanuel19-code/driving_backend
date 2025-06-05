@@ -6,3 +6,19 @@
 2025-06-04T15:27:22.954Z error Too many keys specified; max 64 keys allowed
 2025-06-04T15:27:28.813Z error Too many keys specified; max 64 keys allowed
 2025-06-04T15:27:52.134Z error Too many keys specified; max 64 keys allowed
+2025-06-05T09:39:17.546Z error Unknown column 'amountOwing' in 'field list'
+2025-06-05T09:40:29.164Z error notNull Violation: Student.serviceType cannot be null,
+notNull Violation: Student.amountOwing cannot be null
+2025-06-05T09:56:48.750Z error res is not defined
+2025-06-05T10:01:27.593Z error studentData is not defined
+2025-06-05T10:02:24.434Z error studentData is not defined
+2025-06-05T10:37:16.679Z error Paymen is not defined
+2025-06-05T10:37:41.120Z error PaymentMode is not defined
+2025-06-05T10:54:27.049Z error Cannot access 'payment' before initialization
+2025-06-05T11:04:53.292Z error StudentModel is not defined
+2025-06-05T11:05:34.870Z error Student not found
+2025-06-05T11:06:33.252Z error notNull Violation: Payments.paymentId cannot be null
+2025-06-05T11:09:01.043Z error notNull Violation: Payments.paymentId cannot be null
+2025-06-05T11:09:27.185Z error notNull Violation: Payments.paymentId cannot be null
+2025-06-05T11:09:47.949Z error Data too long for column 'amountPaid' at row 1
+2025-06-05T11:11:16.686Z error Data too long for column 'amountPaid' at row 1

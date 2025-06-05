@@ -9,6 +9,8 @@ tags:
     description: Operations related to student records
   - name: Company Services
     description: Operations related to services offered by the company
+  - name: Payment Api
+    description: Operations related to Payment Services
 
 paths:
 
@@ -413,4 +415,103 @@ paths:
                 msg:
                   type: string
                   example: Internal server error
+        
+  /api/v1/payment/make_payment:
+    post:
+      summary: Add a new Company Service
+      description: Add a service offered by the organization
+      tags:
+        - Payment Api
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - paidBy
+                - paymentMethod
+                - phoneNumber
+                - amountPaid
+              properties:
+                paidBy:
+                  type: string
+                  example: string
+                paymentMethod:
+                  type: string
+                  example: Cash
+                phoneNumber:
+                  type: string
+                  example: "0000000000"
+                amountPaid:
+                  type: string
+                  example: 1500
+      responses:
+        '201':
+          description: Service created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Payment made successfully
+                  data:
+                    type: object
+                    properties:
+                      paymentId:
+                        type: string
+                        example: SVC-54893
+                      paymentMethod:
+                        type: string
+                        example: Cash
+                      phoneNumber:
+                        type: string
+                        example: 0000000000.
+                      amountPaid:
+                        type: string
+                        example: "15000"
+                      paidBy:
+                        type: string
+                        example: string
+                      createdAt:
+                        type: string
+                        format: date-time
+                        example: 2025-06-03T10:20:00Z
+                      updatedAt:
+                        type: string
+                        format: date-time
+                        example: 2025-06-03T10:20:00Z
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Validation error
+        '409':
+          description: Service already exists
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msg:
+                    type: string
+                    example: Service already exists
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msg:
+                    type: string
+                    example: Internal server error
+
 

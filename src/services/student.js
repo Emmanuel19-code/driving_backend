@@ -1,12 +1,14 @@
-import {studentModel,studentIdCounter} from "../models/index.js"
+import {studentModel,studentIdCounter, serviceModels} from "../models/index.js"
 
 
 export const findStudentByEmail = async (email) => {
   return await studentModel.findOne({ where: { email } });
 };
 
-export const createStudent = async (studentData) => {
-  return await studentModel.create(studentData);
+export const createStudent = async (studentData,service) => {
+  const amountOwing = service.fee.toString();
+  const serviceType = service.serviceType
+  return await studentModel.create({...studentData,amountOwing,serviceType});
 };
 
 export const getStudent = async (studentId) =>{

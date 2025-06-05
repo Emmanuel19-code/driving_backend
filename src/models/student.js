@@ -43,12 +43,16 @@ const StudentModel = (sequelize, StudentIdCounter) => {
         type: DataTypes.STRING,
         allowNull: false,
       },
+      amountOwing: {
+        type: DataTypes.DECIMAL(10, 2),
+        allowNull: false,
+      },
     },
     {
       tableName: "students",
       timestamps: true,
     }
-  );  
+  );
   // Attach hook after defining Student
   Student.beforeCreate(async (student, options) => {
     const year = new Date().getFullYear().toString();
@@ -63,7 +67,7 @@ const StudentModel = (sequelize, StudentIdCounter) => {
       await counter.save();
     }
 
-    const padded = String(counter.count).padStart(3, '0');
+    const padded = String(counter.count).padStart(3, "0");
     student.studentId = `STU${year}-${padded}`;
   });
 
