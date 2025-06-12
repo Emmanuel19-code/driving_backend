@@ -3,7 +3,7 @@ import cors from 'cors'
 import StudentRouter from "./routes/student.js"
 import ServiceRouter from "./routes/service.js"
 import PaymentRouter from "./routes/payments.js"
-
+import CompanyCarRouter from "./routes/companyCar.js"
 
 const app = express();
 
@@ -22,5 +22,6 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/api/v1/students', StudentRouter);
 app.use("/api/v1/services",ServiceRouter);
 app.use("/api/v1/payment",PaymentRouter)
+app.use("/api/v1/companycar",CompanyCarRouter)
 
 export default app;
