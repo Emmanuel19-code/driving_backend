@@ -29,3 +29,32 @@ notNull Violation: Student.amountOwing cannot be null
 2025-06-07T15:42:45.798Z error def is not defined
 2025-06-07T15:42:48.553Z error fa is not defined
 2025-06-07T17:58:17.104Z error reco is not defined
+2025-06-12T09:17:01.072Z error lit is not defined
+2025-06-12T09:17:11.377Z error allow is not defined
+2025-06-12T09:17:13.631Z error allowNull is not defined
+2025-06-12T09:55:28.067Z error allMonthsAmount is not defined
+2025-06-12T09:56:40.518Z error allMonthsAmount is not defined
+2025-06-12T09:57:04.247Z error fn is not defined
+2025-06-12T09:57:29.535Z error col is not defined
+2025-06-12T09:57:44.503Z error Op is not defined
+2025-06-12T10:58:47.678Z error car is not defined
+2025-06-12T10:58:58.160Z error car is not defined
+2025-06-12T10:59:00.896Z error Cannot read properties of undefined (reading 'define')
+2025-06-12T10:59:36.578Z error carDocumentSchema is not defined
+2025-06-12T10:59:40.705Z error Cannot read properties of undefined (reading 'define')
+2025-06-12T11:28:49.071Z error carDocumentValidate is not defined
+2025-06-12T11:29:16.275Z error createCarDocument is not defined
+2025-06-12T11:34:00.172Z error handleCarDocumentsRenewal is not defined
+2025-06-12T14:35:37.937Z error Cannot read properties of undefined (reading 'findAll')
+2025-06-12T14:36:00.564Z error Cannot read properties of undefined (reading 'findAll')
+2025-06-12T14:42:36.790Z error Cannot read properties of undefined (reading 'findAll')
+2025-06-12T14:44:10.466Z error Cannot read properties of undefined (reading 'findAll')
+2025-06-12T14:44:12.552Z error Cannot read properties of undefined (reading 'findAll')
+2025-06-12T14:44:17.567Z error Cannot read properties of undefined (reading 'findAll')
+2025-06-12T14:45:21.130Z error Cannot read properties of undefined (reading 'findAll')
+2025-06-12T14:45:26.275Z error Cannot read properties of undefined (reading 'findAll')
+2025-06-12T14:48:43.183Z error Cannot read properties of undefined (reading 'findAll')
+2025-06-12T14:48:43.449Z error Op is not defined
+2025-06-12T14:48:45.461Z error Op is not defined
+2025-06-12T14:48:56.284Z error Op is not defined
+2025-06-12T15:44:24.842Z error Notification is not defined

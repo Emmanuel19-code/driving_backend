@@ -676,4 +676,407 @@ paths:
                     type: string
                     example: Internal server error
 
+  /api/v1/companycar/recharge_fuel:
+    post:
+      summary: Record a fuel refill for a company car
+      description: Logs a fuel refill transaction for a registered company vehicle.
+      tags:
+        - Company Car
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - carRegistrationNumber
+                - amount
+                - litres
+                - refilledBy
+              properties:
+                carRegistrationNumber:
+                  type: string
+                  example: CAR-2024-001
+                amountloaded:
+                  type: number
+                  example: 250.00
+                litres:
+                  type: number
+                  example: 40
+                refilledBy:
+                  type: string
+                  example: John Doe
+      responses:
+        '201':
+          description: Fuel refill recorded successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msg:
+                    type: string
+                    example: Fuel refill saved successfully
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Validation failed
+        '409':
+          description: Refill could not be saved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Could not save the record
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msg:
+                    type: string
+                    example: Internal server error
+
+  /api/v1/companycar/monthly-amount:
+    get:
+      summary: Get total fuel amount spent per month
+      description: Returns the total amount spent on fuel for each month in a given year.
+      tags:
+        - Company Car
+      parameters:
+        - in: query
+          name: year
+          schema:
+            type: integer
+            example: 2024
+          required: false
+          description: Year to retrieve monthly fuel totals for. Defaults to current year if not provided.
+      responses:
+        '200':
+          description: Monthly fuel spending totals
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  year:
+                    type: integer
+                    example: 2024
+                  totalAmount:
+                    type: object
+                    additionalProperties:
+                      type: number
+                      example: 1500
+                    example:
+                      January: 1200
+                      February: 900
+                      March: 0
+                      April: 1600
+                      May: 3000
+                      June: 0
+                      July: 0
+                      August: 0
+                      September: 0
+                      October: 0
+                      November: 0
+                      December: 0
+                  message:
+                    type: string
+                    example: Total fuel amount spent per month for 2024
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msg:
+                    type: string
+                    example: Internal server error
+
+  /api/v1/companycar/monthly-litres-car-consumption:
+    get:
+      summary: Get monthly litres consumption per car
+      description: Returns the total litres of fuel consumed each month by each car for a specified year.
+      tags:
+        - Company Car
+      parameters:
+        - in: query
+          name: year
+          schema:
+            type: integer
+            example: 2025
+          required: true
+          description: The year for which to retrieve litres consumption (e.g. 2025)
+      responses:
+        '200':
+          description: Monthly litres consumption data returned successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  year:
+                    type: integer
+                    example: 2025
+                  data:
+                    type: object
+                    additionalProperties:
+                      type: object
+                      properties:
+                        January:
+                          type: number
+                          example: 0
+                        February:
+                          type: number
+                          example: 0
+                        March:
+                          type: number
+                          example: 0
+                        April:
+                          type: number
+                          example: 0
+                        May:
+                          type: number
+                          example: 0
+                        June:
+                          type: number
+                          example: 40
+                        July:
+                          type: number
+                          example: 0
+                        August:
+                          type: number
+                          example: 0
+                        September:
+                          type: number
+                          example: 0
+                        October:
+                          type: number
+                          example: 0
+                        November:
+                          type: number
+                          example: 0
+                        December:
+                          type: number
+                          example: 0
+                  message:
+                    type: string
+                    example: Monthly litres consumption by each car for 2025
+        '400':
+          description: Invalid or missing year parameter
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msg:
+                    type: string
+                    example: A valid year must be provided in the query (e.g., ?year=2025)
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msg:
+                    type: string
+                    example: Internal server error
+
+  /api/v1/companycar/documents:
+    post:
+      summary: Add a new document for a car
+      tags:
+        - Company Car
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - carRegistrationNumber
+                - documentType
+                - expiryDate
+              properties:
+                carRegistrationNumber:
+                  type: string
+                  example: "CAR-2024-001"
+                  description: The car's registration number
+                documentType:
+                  type: string
+                  example: "Insurance"
+                  description: The type of document
+                expiryDate:
+                  type: string
+                  format: date
+                  example: "2026-12-31"
+                  description: Expiry date of the document (must be a future date)
+      responses:
+        '201':
+          description: Document added successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Document successfully added
+                  data:
+                    type: object
+                    properties:
+                      docId:
+                        type: string
+                        format: uuid
+                        example: "a1b2c3d4-e5f6-7890-ab12-cd345ef67890"
+                      carRegistrationNumber:
+                        type: string
+                        example: "CAR-2024-001"
+                      documentType:
+                        type: string
+                        example: "Insurance"
+                      expiryDate:
+                        type: string
+                        format: date
+                        example: "2026-12-31"
+                      renewed:
+                        type: boolean
+                        example: false
+        '400':
+          description: Bad request - validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Car registration number is required"
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Internal server error"
+
+  /api/v1/companycar/documents/{docId}/renew:
+    put:
+      summary: Renew a car document
+      tags:
+        - Company Car
+      parameters:
+        - name: docId
+          in: path
+          required: true
+          description: UUID of the car document to renew
+          schema:
+            type: string
+            format: uuid
+            example: "a1b2c3d4-e5f6-7890-ab12-cd345ef67890"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - carRegistrationNumber
+                - documentType
+                - expiryDate
+              properties:
+                expiryDate:
+                  type: string
+                  format: date
+                  example: "2027-12-31"
+                  description: The new expiry date for the document
+                carRegistrationNumber:
+                  type: string
+                  example: "CAR-2024-001"
+                documentType:
+                  type: string
+                  example: "Insurance"
+      responses:
+        '200':
+          description: Document renewed successfully or already renewed message
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Document renewed successfully
+                  data:
+                    type: object
+                    properties:
+                      docId:
+                        type: string
+                        format: uuid
+                        example: "a1b2c3d4-e5f6-7890-ab12-cd345ef67890"
+                      renewed:
+                        type: boolean
+                        example: true
+                      expiryDate:
+                        type: string
+                        format: date
+                        example: "2027-12-31"
+        '400':
+          description: Bad request - invalid input or document already renewed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Document is already renewed
+        '404':
+          description: Document not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Document with given id not found
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Internal server error
 

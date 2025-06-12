@@ -4,13 +4,21 @@ const recordFuel = (sequelize)=>{
     const fuelmodel = sequelize.define(
       "LogFuel",
       {
-        carId:{
+        carRegistrationNumber:{
             type:DataTypes.STRING,
             allowNull:false
+        },
+        refilledBy:{
+          type:DataTypes.STRING,
+          allowNull:false
         },
         amountloaded:{
             type:DataTypes.STRING,
             allowNull:false
+        },
+        litres:{
+           type:DataTypes.STRING,
+           //allowNull:false
         }
       },
       {

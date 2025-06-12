@@ -6,6 +6,8 @@ import serviceModel from "./services.js";
 import PaymentModel from "./paymentModel.js";
 import companyCarModel from "./companyCars.js";
 import recordFuel from "./recordfuelLoad.js";
+import carDocumentSchema from "./carDocuments.js";
+
 
 let studentModel;
 let instructorModel;
@@ -14,6 +16,7 @@ let serviceModels;
 let paymentModel;
 let carModel;
 let fuelmodel;
+let carDocModel;
 export const registerModels = (sequelize) => {
   const StudentIdCounter = StudentIdCounterModel(sequelize);
   const InstructorIdCounter = InstructorIdCounterModel(sequelize);
@@ -21,6 +24,7 @@ export const registerModels = (sequelize) => {
   serviceModels = serviceModel(sequelize);
   carModel = companyCarModel(sequelize);
   fuelmodel = recordFuel(sequelize);
+  carDocModel = carDocumentSchema(sequelize)
   studentModel = StudentModel(sequelize, StudentIdCounter);
   instructorModel = InstructorModel(sequelize, InstructorIdCounter);
   studentIdCounter = StudentIdCounter;
@@ -33,5 +37,6 @@ export {
   serviceModels,
   paymentModel,
   carModel,
-  fuelmodel
+  fuelmodel,
+  carDocModel
 };
