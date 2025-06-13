@@ -1,4 +1,4 @@
-import InstructorModel from "./Instructor.js";
+import InstructorModel from "./instructor.js";
 import StudentModel from "./Student.js";
 import StudentIdCounterModel from "./StudentIdCounter.js";
 import InstructorIdCounterModel from "./InstructorIdCounter.js";
@@ -7,6 +7,8 @@ import PaymentModel from "./paymentModel.js";
 import companyCarModel from "./companyCars.js";
 import recordFuel from "./recordfuelLoad.js";
 import carDocumentSchema from "./carDocuments.js";
+import bookSlotModel from "./bookSlots.js";
+import timeSlotModel from "./timeSlots.js";
 
 
 let studentModel;
@@ -17,6 +19,8 @@ let paymentModel;
 let carModel;
 let fuelmodel;
 let carDocModel;
+let timeSlots;
+let bookings;
 export const registerModels = (sequelize) => {
   const StudentIdCounter = StudentIdCounterModel(sequelize);
   const InstructorIdCounter = InstructorIdCounterModel(sequelize);
@@ -25,8 +29,10 @@ export const registerModels = (sequelize) => {
   carModel = companyCarModel(sequelize);
   fuelmodel = recordFuel(sequelize);
   carDocModel = carDocumentSchema(sequelize)
+  bookings = bookSlotModel(sequelize)
   studentModel = StudentModel(sequelize, StudentIdCounter);
   instructorModel = InstructorModel(sequelize, InstructorIdCounter);
+  timeSlots = timeSlotModel(sequelize)
   studentIdCounter = StudentIdCounter;
 };
 
@@ -38,5 +44,7 @@ export {
   paymentModel,
   carModel,
   fuelmodel,
-  carDocModel
+  carDocModel,
+  timeSlots,
+  bookings
 };

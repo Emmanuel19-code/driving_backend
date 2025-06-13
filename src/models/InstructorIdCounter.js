@@ -19,3 +19,4 @@ const InstructorIdCounterModel = (sequelize) => {
 };
 
 export default InstructorIdCounterModel;
+

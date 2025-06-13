@@ -13,6 +13,10 @@ tags:
     description: Operations related to Payment Services
   - name: Company Car 
     description: Operations relating to handling company cars
+  - name: Schedule and TimeSlots
+    description: Operations relating to generating timeSlots and handling assigning
+  - name: Staff
+    description: Operations relating to Staff
 
 paths:
 
@@ -1079,4 +1083,344 @@ paths:
                   message:
                     type: string
                     example: Internal server error
+  
 
+  /api/v1/bookingAndslots/generate:
+    post:
+      summary: Generate available time slots
+      description: Generates 1-hour time slots for each provided day between startTime and endTime.
+      tags:
+        - Schedule and TimeSlots
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                days:
+                  oneOf:
+                    - type: string
+                      example: "Monday"
+                    - type: array
+                      items:
+                        type: string
+                      example: ["Monday", "Wednesday", "Friday"]
+                startTime:
+                  type: string
+                  example: "08:00"
+                endTime:
+                  type: string
+                  example: "14:00"
+              required:
+                - days
+                - startTime
+                - endTime
+      responses:
+        "201":
+          description: Time slots generated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Time slots generated successfully.
+                  slots:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 1
+                        day:
+                          type: string
+                          example: Monday
+                        startTime:
+                          type: string
+                          example: "08:00"
+                        endTime:
+                          type: string
+                          example: "09:00"
+                        isBooked:
+                          type: boolean
+                          example: false
+        "400":
+          description: Bad request (missing fields)
+        "500":
+          description: Internal server error
+
+  /api/v1/bookingAndslots/generated_slots:
+    get:
+      summary: Get all generated time slots
+      description: Retrieves all time slots generated in the system.
+      tags:
+        - Schedule and TimeSlots
+      responses:
+        '200':
+          description: A list of available time slots
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  slots:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 1
+                        startTime:
+                          type: string
+                          format: time
+                          example: "09:00"
+                        endTime:
+                          type: string
+                          format: time
+                          example: "10:00"
+                        day:
+                          type: string
+                          example: "Monday"
+        '409':
+          description: Conflict or failed to fetch time slots
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Failed to generate time slots."
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "An unexpected error occurred."
+
+  /api/v1/bookingAndslots/allocate_slot:
+    post:
+      summary: Create a booking
+      description: Creates booking(s) for a student and driver using one or more timeSlot IDs.
+      tags:
+        - Schedule and TimeSlots
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - timeSlotIds
+                - studentId
+                - driverId
+              properties:
+                timeSlotIds:
+                  type: array
+                  minItems: 1
+                  items:
+                    type: string
+                    format: uuid
+                  description: List of timeSlot IDs to book
+                studentId:
+                  type: string
+                  format: uuid
+                  description: The ID of the student
+                driverId:
+                  type: string
+                  format: uuid
+                  description: The ID of the instructor
+      responses:
+        '201':
+          description: Booking(s) created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Booking(s) created successfully.
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Booking'
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    example: "timeSlotIds is required"
+        '409':
+          description: Conflict — timeSlot already booked
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    example: Time slot already booked and not yet completed.
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    example: Internal server error.
+
+  /api/v1/staff/register_staff:
+    post:
+      summary: Register a new instructor
+      description: Creates a new instructor account with validated input data.
+      tags:
+        - Staff
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - fullName
+                - email
+                - phoneOne
+                - Role
+              properties:
+                fullName:
+                  type: string
+                  example: "John Doe"
+                email:
+                  type: string
+                  format: email
+                  example: "johndoe@example.com"
+                phoneOne:
+                  type: string
+                  example: "+233501234567"
+                phoneTwo:
+                  type: string
+                  example: "+233541234567"
+                Role:
+                  type: string
+                  example: "Instructor"
+      responses:
+        '201':
+          description: Instructor registered successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msg:
+                    type: string
+                    example: "Instructor added successfully."
+                  data:
+                    $ref: '#/components/schemas/Instructor'
+        '400':
+          description: Bad request - validation error or email already exists
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msg:
+                    type: string
+                    example: "An account is registered with this email"
+                  error:
+                    type: string
+                    example: "Validation failed: email is required"
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Internal Server Error"
+
+components:
+  schemas:
+    Instructor:
+      type: object
+      properties:
+        staffId:
+          type: string
+          example: "STAFF2025-001"
+        fullName:
+          type: string
+          example: "John Doe"
+        email:
+          type: string
+          example: "johndoe@example.com"
+        phoneOne:
+          type: string
+          example: "+233501234567"
+        phoneTwo:
+          type: string
+          example: "+233541234567"
+        Role:
+          type: string
+          example: "Instructor"
+        createdAt:
+          type: string
+          format: date-time
+          example: "2025-06-13T15:00:00.000Z"
+        updatedAt:
+          type: string
+          format: date-time
+          example: "2025-06-13T15:00:00.000Z"
+
+
+    Booking:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        timeSlotId:
+          type: string
+          format: uuid
+        studentId:
+          type: string
+          format: uuid
+        driverId:
+          type: string
+          format: uuid
+        status:
+          type: string
+          enum: [pending, completed, cancelled]
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
