@@ -39,14 +39,14 @@ const StudentModel = (sequelize, StudentIdCounter) => {
         type: DataTypes.STRING,
         allowNull: true,
       },
-      serviceType: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
       amountOwing: {
         type: DataTypes.DECIMAL(10, 2),
         allowNull: false,
       },
+      amountPaid:{
+        type:DataTypes.DECIMAL(10,2),
+        defaultValue:0
+      }
     },
     {
       tableName: "students",

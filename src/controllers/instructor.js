@@ -8,7 +8,7 @@ export const registerInstructor = async (req, res) => {
     if (error) {
       return res.status(400).json({ error: error.details[0].message });
     }
-    const existingInstructor = await findInstructorByEmail(value.email); // adjust if it's an instructor lookup
+    const existingInstructor = await findInstructorByEmail(value.email); 
     if (existingInstructor) {
       return res.status(400).json({
         msg: "An account is registered with this email",

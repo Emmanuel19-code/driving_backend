@@ -94,7 +94,8 @@ paths:
                 - lastName
                 - gender
                 - email
-                - serviceType
+                - serviceId
+                - phoneOne
               properties:
                 firstName:
                   type: string
@@ -119,7 +120,7 @@ paths:
                 phoneTwo:
                   type: string
                   example: "08098765432"
-                serviceType:
+                serviceId:
                   type: string
                   example: Driving Lesson
       responses:
@@ -401,7 +402,10 @@ paths:
                 - serviceType
                 - serviceDescription
                 - fee
-                - duration
+                - totalDuration
+                - noOfDaysInClass
+                - noOfPracticalHours
+                - allowedDays
               properties:
                 serviceType:
                   type: string
@@ -409,12 +413,21 @@ paths:
                 serviceDescription:
                   type: string
                   example: An intensive course to prepare students for the road test.
+                totalDuration:
+                  type: string
+                  example: An intensive course to prepare students for the road test.
+                noOfDaysInClass:
+                  type: string
+                  example: An intensive course to prepare students for the road test.
+                noOfPracticalHours:
+                  type: string
+                  example: An intensive course to prepare students for the road test.
+                allowedDays:
+                  type: string
+                  example: An intensive course to prepare students for the road test.
                 fee:
                   type: string
                   example: "15000"
-                duration:
-                  type: string
-                  example: 4 weeks
       responses:
         '201':
           description: Service created successfully

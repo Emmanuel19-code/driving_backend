@@ -1,13 +1,14 @@
 import logger from "../config/logger.js";
 import {
   allStudents,
+  countStudents,
   createStudent,
   findStudentByEmail,
   getStudent,
   searchStudent,
 } from "../services/student.js";
 import { studentSchema } from "../validations/student.js";
-import { serviceModels } from "../models/index.js";
+
 
 export const registerStudent = async (req, res) => {
   try {
@@ -21,15 +22,8 @@ export const registerStudent = async (req, res) => {
         msg: "An account is registered with this email",
       });
     }
-    const service = await serviceModels.findOne({
-      where: { serviceId: value.serviceId },
-    });
-    if (!service) {
-      return res.status(400).json({
-        msg: "Service is not registered",
-      });
-    }
-    const student = await createStudent(value, service);
+    
+    const student = await createStudent(value);
     if (!student) {
       return res.status(409).json({ msg: "Student Could not be added" });
     }
@@ -59,3 +53,17 @@ export const fetchAllStudent = async (req, res) => {
     res.status(500).json({ error: "Internal Server error" });
   }
 };
+
+export const studentPopulationByYear = async (req,res) =>{
+ try {
+   const result = await countStudents();
+   if(!result.success)
+   {
+     return res.status(409).json(result.msg)
+   }
+   return res.status(200).json(result.msg)
+ } catch (error) {
+  logger.error(error);
+  res.status(500).json({ error: "Internal Server error" });
+ }
+}

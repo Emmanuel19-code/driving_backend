@@ -348,3 +348,23 @@ notNull Violation: Student.amountOwing cannot be null
 2025-06-13T16:47:14.918Z error Notification is not defined
 2025-06-13T16:47:23.209Z error findStudentByEmail is not defined
 2025-06-13T16:47:58.611Z error Notification is not defined
+2025-06-14T20:17:01.081Z error noOfDays is not defined
+2025-06-14T20:17:05.453Z error Unrecognized datatype for attribute "Services.noOfDaysInClass"
+2025-06-14T20:17:13.270Z error Unrecognized datatype for attribute "Services.noOfDaysInClass"
+2025-06-14T20:17:20.354Z error DataTy is not defined
+2025-06-14T20:17:28.691Z error allow is not defined
+2025-06-14T20:18:16.457Z error Unrecognized datatype for attribute "Services.noOfDaysInPracticals"
+2025-06-14T20:18:19.458Z error Unrecognized datatype for attribute "Services.noOfDaysInPracticals"
+2025-06-14T20:18:23.422Z error Data is not defined
+2025-06-14T20:18:33.609Z error Unrecognized datatype for attribute "Services.noOfDaysInPracticals"
+2025-06-14T20:19:48.315Z error Data is not defined
+2025-06-14T20:19:53.132Z error Unrecognized datatype for attribute "Student.amountPaid"
+2025-06-15T13:43:55.504Z error Unrecognized datatype for attribute "Services.allowedDays"
+2025-06-15T13:56:56.550Z error reg is not defined
+2025-06-15T13:57:10.133Z error student is not defined
+2025-06-15T14:05:01.574Z error StudentModel is not defined
+2025-06-15T14:26:57.449Z error Data truncated for column 'noOfDaysInClass' at row 1
+2025-06-15T14:35:40.919Z error notNull Violation: studentChosenService.classCompleted cannot be null
+2025-06-15T14:40:18.111Z error Data truncated for column 'totalDurationForService' at row 1
+2025-06-15T14:41:59.658Z error Unrecognized datatype for attribute "studentChosenService.totalDurationForService"
+2025-06-15T18:05:18.496Z error notNull Violation: studentChosenService.noOfDaysInClass cannot be null
