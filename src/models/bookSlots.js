@@ -25,6 +25,10 @@ const bookingModel = (sequelize) => {
           key: "timeSlotId",       
         },
       },
+      bookedCar:{
+         type:DataTypes.STRING,
+         allowNull:false
+      },
       status: {
         type: DataTypes.ENUM("in_session", "completed",),
         defaultValue: "in_session",

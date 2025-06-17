@@ -7,7 +7,7 @@ const serviceModel = (sequelize) => {
       serviceId: {
         type: DataTypes.STRING,
         //allowNull: false,
-       // unique: true,
+        // unique: true,
       },
       serviceType: {
         type: DataTypes.STRING,
@@ -17,12 +17,22 @@ const serviceModel = (sequelize) => {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      fee: {
+      totalDuration: {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      duration: {
+      noOfDaysInClass: {
         type: DataTypes.STRING,
+        allowNull: false,
+      },
+      noOfPracticalHours: {
+        type: DataTypes.INTEGER,
+      },
+      allowedDays: {
+        type: DataTypes.STRING,
+      },
+      fee: {
+        type: DataTypes.DECIMAL(10, 0),
         allowNull: false,
       },
     },
