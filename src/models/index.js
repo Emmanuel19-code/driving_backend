@@ -11,7 +11,6 @@ import bookSlotModel from "./bookSlots.js";
 import timeSlotModel from "./timeSlots.js";
 import studentRegisteredService from "./registeredStudentChosenService.js";
 
-
 let studentModel;
 let instructorModel;
 let studentIdCounter;
@@ -30,13 +29,40 @@ export const registerModels = (sequelize) => {
   serviceModels = serviceModel(sequelize);
   carModel = companyCarModel(sequelize);
   fuelmodel = recordFuel(sequelize);
-  carDocModel = carDocumentSchema(sequelize)
-  bookings = bookSlotModel(sequelize)
-  registeredSelectedService = studentRegisteredService(sequelize)
+  carDocModel = carDocumentSchema(sequelize);
+  bookings = bookSlotModel(sequelize);
+  registeredSelectedService = studentRegisteredService(sequelize);
   studentModel = StudentModel(sequelize, StudentIdCounter);
   instructorModel = InstructorModel(sequelize, InstructorIdCounter);
-  timeSlots = timeSlotModel(sequelize)
+  timeSlots = timeSlotModel(sequelize);
   studentIdCounter = StudentIdCounter;
+
+  bookings.belongsTo(timeSlots, {
+    foreignKey: "timeSlotId",
+    targetKey: "timeSlotId",
+  });
+  timeSlots.hasMany(bookings, {
+    foreignKey: "timeSlotId",
+    sourceKey: "timeSlotId",
+  });
+  bookings.belongsTo(studentModel, {
+    foreignKey: "studentId",
+    targetKey: "studentId",
+  });
+  studentModel.hasMany(bookings, {
+    foreignKey: "studentId",
+    sourceKey: "studentId",
+  });
+  bookings.belongsTo(instructorModel, {
+    foreignKey: "driverId",
+    targetKey: "staffId",
+    as: "Staff", // Must match how you query it later
+  });
+  instructorModel.hasMany(bookings, {
+    foreignKey: "driverId",
+    sourceKey: "staffId",
+    as: "StaffBookings", // Optional but helpful
+  });
 };
 
 export {

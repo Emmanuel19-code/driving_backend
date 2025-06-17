@@ -370,3 +370,13 @@ notNull Violation: Student.amountOwing cannot be null
 2025-06-15T18:05:18.496Z error notNull Violation: studentChosenService.noOfDaysInClass cannot be null
 2025-06-13T16:48:03.569Z error Notification is not defined
 2025-06-13T16:53:00.219Z error Notification is not defined
+2025-06-17T09:32:36.292Z error Unknown column 'total' in 'field list'
+2025-06-17T09:38:45.222Z error Table 'driving_school.students' doesn't exist
+2025-06-17T10:02:06.308Z error Unrecognized datatype for attribute "Booking.dateStarted"
+2025-06-17T10:02:09.857Z error Unrecognized datatype for attribute "Booking.dateStarted"
+2025-06-17T10:44:00.290Z error Error in picking the selected period: notNull Violation: Booking.bookedCar cannot be null
+2025-06-17T11:43:57.258Z error Error creating bookings: Op is not defined
+2025-06-17T11:44:12.806Z error Error creating bookings: Unknown column 'allowedDays' in 'field list'
+2025-06-17T12:10:31.294Z error notNull Violation: studentChosenService.noOfTimesWeekly cannot be null
+2025-06-17T12:15:49.776Z error Error creating bookings: TimeSlot is not associated to Booking!
+2025-06-17T13:23:10.235Z error handleAttendanceForPracticals error: studentChosenService is not defined

@@ -30,6 +30,13 @@ const studentRegisteredService = (sequelize) => {
       noOfPracticalHours: {
         type: DataTypes.INTEGER,
       },
+      allowedDays: {
+        type: DataTypes.STRING,
+      },
+      noOfTimesWeekly:{
+        type:DataTypes.INTEGER,
+        allowNull:false
+      },
       chosenDaysforPracticals: {
         type: DataTypes.STRING,
         defaultValue: "no days selected",

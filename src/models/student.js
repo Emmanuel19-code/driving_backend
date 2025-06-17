@@ -43,31 +43,42 @@ const StudentModel = (sequelize, StudentIdCounter) => {
         type: DataTypes.DECIMAL(10, 2),
         allowNull: false,
       },
-      amountPaid:{
-        type:DataTypes.DECIMAL(10,2),
-        defaultValue:0
-      }
+      amountPaid: {
+        type: DataTypes.DECIMAL(10, 2),
+        defaultValue: 0,
+      },
     },
     {
       tableName: "students",
       timestamps: true,
     }
   );
-  // Attach hook after defining Student
-  Student.beforeCreate(async (student, options) => {
-    const year = new Date().getFullYear().toString();
 
+  // HOOK: Assign studentId and update year-gender stats
+  Student.beforeCreate(async (student) => {
+    const year = new Date().getFullYear().toString();
+    const gender = student.gender?.toLowerCase();
+
+    // Find or create year counter
     const [counter, created] = await StudentIdCounter.findOrCreate({
       where: { year },
-      defaults: { count: 1 },
+      defaults: {
+        year,
+        total: 1,
+        male: gender === "male" ? 1 : 0,
+        female: gender === "female" ? 1 : 0,
+      },
     });
 
     if (!created) {
-      counter.count += 1;
+      counter.total += 1;
+      if (gender === "male") counter.male += 1;
+      if (gender === "female") counter.female += 1;
       await counter.save();
     }
 
-    const padded = String(counter.count).padStart(3, "0");
+    // Generate student ID like STU2025-0005
+    const padded = String(counter.total).padStart(4, "0");
     student.studentId = `STU${year}-${padded}`;
   });
 

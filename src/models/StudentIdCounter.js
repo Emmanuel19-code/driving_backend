@@ -11,7 +11,17 @@ const StudentIdCounterModel = (sequelize) => {
           allowNull: false,
           unique: true,
         },
-        count: {
+        total: {
+          type: DataTypes.INTEGER,
+          defaultValue: 0,
+          allowNull: false,
+        },
+        male: {
+          type: DataTypes.INTEGER,
+          defaultValue: 0,
+          allowNull: false,
+        },
+        female: {
           type: DataTypes.INTEGER,
           defaultValue: 0,
           allowNull: false,
@@ -23,8 +33,9 @@ const StudentIdCounterModel = (sequelize) => {
       }
     );
   } catch (error) {
-    logger.error(error)
+    logger.error(error);
   }
 };
 
 export default StudentIdCounterModel;
+

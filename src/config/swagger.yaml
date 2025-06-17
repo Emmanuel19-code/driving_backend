@@ -406,6 +406,7 @@ paths:
                 - noOfDaysInClass
                 - noOfPracticalHours
                 - allowedDays
+                - noOfTimesWeekly
               properties:
                 serviceType:
                   type: string
@@ -415,16 +416,19 @@ paths:
                   example: An intensive course to prepare students for the road test.
                 totalDuration:
                   type: string
-                  example: An intensive course to prepare students for the road test.
+                  example: 3 months.
                 noOfDaysInClass:
                   type: string
-                  example: An intensive course to prepare students for the road test.
+                  example: 2_weeks.
                 noOfPracticalHours:
-                  type: string
-                  example: An intensive course to prepare students for the road test.
+                  type: integer
+                  example: 20.
+                noOfTimesWeekly:
+                  type: integer
+                  example: 3.
                 allowedDays:
                   type: string
-                  example: An intensive course to prepare students for the road test.
+                  example: Mon - Fri || saturday_only.
                 fee:
                   type: string
                   example: "15000"
@@ -1379,6 +1383,241 @@ paths:
                   error:
                     type: string
                     example: "Internal Server Error"
+
+  /api/v1/students/population_info:
+    get:
+      summary: Get student population by year
+      tags:
+        - Students
+      responses:
+        '200':
+          description: Successfully retrieved student population data
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    year:
+                      type: string
+                      example: "2024"
+                    count:
+                      type: integer
+                      example: 120
+        '409':
+          description: Conflict - Could not fetch data
+          content:
+            application/json:
+              schema:
+                type: string
+                example: Could not fetch data
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Internal Server error  
+
+  /api/v1/students/assign_pick_periods:
+    post:
+      summary: Book practical driving periods for a student
+      tags:
+        - Students
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - timeSlotIds
+                - studentId
+                - driverId
+              properties:
+                timeSlotIds:
+                  type: array
+                  items:
+                    type: integer
+                  description: Array of time slot IDs to be booked
+                  example: [1, 2, 3]
+                studentId:
+                  type: string
+                  description: ID of the student booking the sessions
+                  example: STU2025-0005
+                driverId:
+                  type: string
+                  description: ID of the instructor assigned
+                  example: DRV2025-0010
+      responses:
+        '200':
+          description: Successfully booked all sessions
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    description: List of created booking records
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        studentId:
+                          type: string
+                        driverId:
+                          type: string
+                        timeSlotId:
+                          type: integer
+        '400':
+          description: One or more slots are already booked or not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    example: Time slot with ID 2 is already booked and not yet completed.
+        '500':
+          description: Server error while creating bookings
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    example: Failed to create bookings.
+
+  /api/v1/students/mark_attendance/{studentId}:
+    put:
+      summary: Mark attendance for a practical session
+      description: Recording Attendance.
+      tags:
+        - Students
+      parameters:
+        - name: studentId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The ID of the student whose attendance is being marked.
+      responses:
+        "200":
+          description: Attendance marked successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Attendance marked successfully.
+        "400":
+          description: Missing or invalid studentId
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    example: "Provide studentId"
+        "404":
+          description: Student service not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    example: "Student record not found"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    example: "Internal server error"
+
+  /api/v1/bookingAndslots/all_bookings:
+    get:
+      summary: Get all booked slots with student and instructor details
+      tags:
+        - Schedule and TimeSlots
+      responses:
+        '200':
+          description: Successfully retrieved booked slots
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        studentName:
+                          type: string
+                          example: John Doe
+                        studentPhone:
+                          type: string
+                          example: "0244123456"
+                        instructorName:
+                          type: string
+                          example: Jane Smith
+                        instructorPhone:
+                          type: string
+                          example: "0556789123"
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    example: Internal server error
 
 components:
   schemas:

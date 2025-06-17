@@ -31,6 +31,10 @@ const serviceModel = (sequelize) => {
       allowedDays: {
         type: DataTypes.STRING,
       },
+      noOfTimesWeekly:{
+        type:DataTypes.INTEGER,
+        allowNull:false
+      },
       fee: {
         type: DataTypes.DECIMAL(10, 0),
         allowNull: false,

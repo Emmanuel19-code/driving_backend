@@ -1,6 +1,7 @@
-import { createMultipleBookingsService, generateAllTimeSlots, getAllTimeSlots } from "../services/scheduleService.js";
+import {  generateAllTimeSlots, getAllPracticalSessions, getAllTimeSlots, handleAttendanceForPracticals, practicalPeriodService } from "../services/scheduleService.js";
 import { bookingSchema } from "../validations/practical.js";
 
+//generate the timeSlots
 export const generateSchedule = async (req, res) => {
   try {
     const { days, startTime, endTime } = req.body;
@@ -26,6 +27,7 @@ export const generateSchedule = async (req, res) => {
   }
 };
 
+//getting all times available
 export const allGeneratedTimes = async (req, res) => {
   try {
     const result = await getAllTimeSlots();
@@ -40,7 +42,7 @@ export const allGeneratedTimes = async (req, res) => {
   }
 };
 
-
+//booking students for practicals
 export const createBookings = async (req, res) => {
   try {
     const { error, value } = bookingSchema.validate(req.body);
@@ -51,7 +53,7 @@ export const createBookings = async (req, res) => {
       });
     }
 
-    const result = await createMultipleBookingsService({
+    const result = await practicalPeriodService({
       timeSlotIds: value.timeSlotIds,
       studentId: value.studentId,
       driverId: value.driverId,
@@ -67,10 +69,55 @@ export const createBookings = async (req, res) => {
       data: result.data,
     });
   } catch (err) {
-    console.error("Create booking error:", err);
+    logger.error("Create booking error:", err);
     return res.status(500).json({
       success: false,
       error: "Internal server error.",
     });
+  }
+};
+
+
+//marking attendance
+export const markAttendance = async (req, res) => {
+  try {
+    const { studentId } = req.params;
+    if (!studentId) {
+      return res.status(400).json({
+        success: false,
+        message: "Student ID is required",
+      });
+    }
+    const result = await handleAttendanceForPracticals(studentId);
+    if (!result.success) {
+      return res.status(400).json({
+        success: false,
+        message: result.error,
+      });
+    }
+    return res.status(200).json({
+      success: true,
+      message: result.message,
+      totalDone: result.totalDone,
+    });
+  } catch (error) {
+    logger.error("markAttendance error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error.",
+    });
+  }
+};
+
+//getting all booked sessions
+export const fetchAllBookedSlots = async (req, res) => {
+  try {
+    const result = await getAllPracticalSessions();
+    if (!result.success) {
+      return res.status(500).json({ success: false, error: result.error });
+    }
+    return res.status(200).json({ success: true, data: result.data });
+  } catch (err) {
+    return res.status(500).json({ success: false, error: "Server error" });
   }
 };

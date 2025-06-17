@@ -16,8 +16,18 @@ export const serviceValidate = Joi.object({
   noOfDaysInClass: Joi.string().required().messages({
     "string.empty": "provide number of days",
   }),
-  noOfPracticalHours: Joi.string().required().messages({
-    "string.empty": "provide number of hours",
+  noOfPracticalHours: Joi.number()
+  .min(1)
+  .required()
+  .messages({
+    "number.base": "Number of hours must be a valid number",
+    "number.min": "Number of hours must be greater than 0",
+    "any.required": "Provide number of hours",
+  }),
+  noOfTimesWeekly:Joi.number().min(1).required().messages({
+    "number.base": "Number of hours must be a valid number",
+    "number.min": "Number of hours must be greater than 0",
+    "any.required": "Provide number of times in a week",
   }),
   allowedDays:Joi.string().required().messages({
     "string.empty":"provide days for this service"

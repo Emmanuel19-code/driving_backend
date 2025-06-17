@@ -5,11 +5,13 @@ import {
   createStudent,
   findStudentByEmail,
   getStudent,
+  getStudentsScheduledForTomorrow,
   searchStudent,
 } from "../services/student.js";
 import { studentSchema } from "../validations/student.js";
 
 
+//registering a student
 export const registerStudent = async (req, res) => {
   try {
     const { error, value } = studentSchema.validate(req.body);
@@ -24,8 +26,10 @@ export const registerStudent = async (req, res) => {
     }
     
     const student = await createStudent(value);
-    if (!student) {
-      return res.status(409).json({ msg: "Student Could not be added" });
+    console.log(student);
+    
+    if (!student.success) {
+      return res.status(409).json({ msg: student.error });
     }
     res.status(201).json({ msg: "Student Created" });
   } catch (error) {
@@ -34,6 +38,7 @@ export const registerStudent = async (req, res) => {
   }
 };
 
+//searching for a student
 export const fetchStudent = async (req, res) => {
   try {
     const name = req.query.name;
@@ -44,6 +49,7 @@ export const fetchStudent = async (req, res) => {
   }
 };
 
+//getting all students
 export const fetchAllStudent = async (req, res) => {
   try {
     const student = await allStudents();
@@ -54,6 +60,7 @@ export const fetchAllStudent = async (req, res) => {
   }
 };
 
+//getting the total number of registered students in a year
 export const studentPopulationByYear = async (req,res) =>{
  try {
    const result = await countStudents();
@@ -67,3 +74,16 @@ export const studentPopulationByYear = async (req,res) =>{
   res.status(500).json({ error: "Internal Server error" });
  }
 }
+
+//getting students for the nextday practical session
+export const fetchTheNextDayStudentScheduled = async (req, res) => {
+  try {
+    const result = await getStudentsScheduledForTomorrow();
+    if (!result.success) {
+      return res.status(500).json({ success: false, error: result.error });
+    }
+    return res.status(200).json({ success: true, data: result.data });
+  } catch (err) {
+    return res.status(500).json({ success: false, error: "Server error" });
+  }
+};
