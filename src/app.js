@@ -6,6 +6,8 @@ import PaymentRouter from "./routes/payments.js"
 import CompanyCarRouter from "./routes/companyCar.js"
 import BookandHandleSchedules from "./routes/bookSchedule.js"
 import StaffRouter from "./routes/staff.js"
+import { globalRateLimiter } from './middlewares/rateLimiter.js'
+import helmet from "helmet"
 
 const app = express();
 
@@ -20,6 +22,11 @@ const corsOptions = {
 app.use(cors())
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+app.use(globalRateLimiter)
+app.use(helmet())
+
+app.disable("x-powered-by")
 
 app.use('/api/v1/students', StudentRouter);
 app.use("/api/v1/services",ServiceRouter);

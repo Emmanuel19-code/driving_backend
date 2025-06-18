@@ -3,6 +3,7 @@ import {
   allStudents,
   countStudents,
   createStudent,
+  fetchCompletedStudents,
   findStudentByEmail,
   getStudent,
   getStudentsScheduledForTomorrow,
@@ -85,5 +86,22 @@ export const fetchTheNextDayStudentScheduled = async (req, res) => {
     return res.status(200).json({ success: true, data: result.data });
   } catch (err) {
     return res.status(500).json({ success: false, error: "Server error" });
+  }
+};
+
+
+//getting students who have completed their theory class
+export const getStudentsCompletedTheoryClass = async (req, res) => {
+  try {
+    const result = await fetchCompletedStudents();
+    if (!result.success) {
+      return res.status(500).json({ success: false, error: result.error });
+    }
+    return res.status(200).json({ success: true, data: result.data });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      error: error.message || "An unexpected error occurred while fetching students.",
+    });
   }
 };

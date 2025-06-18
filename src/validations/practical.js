@@ -12,5 +12,4 @@ export const bookingSchema = Joi.object({
       "any.required": "timeSlotIds is required.",
     }),
   studentId: Joi.string().required(),
-  driverId: Joi.string().required(),
 });

@@ -1437,7 +1437,6 @@ paths:
               required:
                 - timeSlotIds
                 - studentId
-                - driverId
               properties:
                 timeSlotIds:
                   type: array
@@ -1449,10 +1448,6 @@ paths:
                   type: string
                   description: ID of the student booking the sessions
                   example: STU2025-0005
-                driverId:
-                  type: string
-                  description: ID of the instructor assigned
-                  example: DRV2025-0010
       responses:
         '200':
           description: Successfully booked all sessions
@@ -1618,6 +1613,48 @@ paths:
                   error:
                     type: string
                     example: Internal server error
+            
+  /api/v1/students/completed_theory_class:
+    get:
+      summary: Get Students Who Have Completed Class
+      description: Returns a list of students whose classCompleted status is true, including their name and studentId.
+      tags:
+        - Students
+      responses:
+        "200":
+          description: A list of completed students.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        studentId:
+                          type: string
+                          example: STU2025-0004
+                        name:
+                          type: string
+                          example: Ama Serwaa Boateng
+        "500":
+          description: Server error while retrieving completed students.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    example: Failed to fetch completed students
 
 components:
   schemas:

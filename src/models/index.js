@@ -37,6 +37,7 @@ export const registerModels = (sequelize) => {
   timeSlots = timeSlotModel(sequelize);
   studentIdCounter = StudentIdCounter;
 
+  // Booking relationships
   bookings.belongsTo(timeSlots, {
     foreignKey: "timeSlotId",
     targetKey: "timeSlotId",
@@ -45,6 +46,7 @@ export const registerModels = (sequelize) => {
     foreignKey: "timeSlotId",
     sourceKey: "timeSlotId",
   });
+
   bookings.belongsTo(studentModel, {
     foreignKey: "studentId",
     targetKey: "studentId",
@@ -53,17 +55,27 @@ export const registerModels = (sequelize) => {
     foreignKey: "studentId",
     sourceKey: "studentId",
   });
+
   bookings.belongsTo(instructorModel, {
     foreignKey: "driverId",
     targetKey: "staffId",
-    as: "Staff", // Must match how you query it later
+    as: "Staff",
   });
   instructorModel.hasMany(bookings, {
     foreignKey: "driverId",
     sourceKey: "staffId",
-    as: "StaffBookings", // Optional but helpful
+    as: "StaffBookings",
+  });
+  registeredSelectedService.belongsTo(studentModel, {
+    foreignKey: "studentId",
+    targetKey: "studentId",
+  });
+  studentModel.hasMany(registeredSelectedService, {
+    foreignKey: "studentId",
+    sourceKey: "studentId",
   });
 };
+
 
 export {
   studentModel,

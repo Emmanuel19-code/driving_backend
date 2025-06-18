@@ -80,62 +80,45 @@ export const getAllTimeSlots = async () => {
 export const practicalPeriodService = async ({
   timeSlotIds,
   studentId,
-  driverId,
 }) => {
   const createdBookings = [];
-
   try {
-    // Fetch time slots first
     const slots = await timeSlots.findAll({
       where: { timeSlotId: { [Op.in]: timeSlotIds } },
     });
-
     if (slots.length !== timeSlotIds.length) {
       return {
         success: false,
         error: "One or more time slots are invalid.",
       };
     }
-
-    // Get student chosen service
     const studentService = await registeredSelectedService.findOne({
       where: { studentId },
     });
     if (!studentService)
       return { success: false, error: "Student service not found." };
-
     const service = await serviceModels.findOne({
       where: { serviceId: studentService.serviceTypeId },
     });
     if (!service) return { success: false, error: "Service not found." };
-
     const maxWeeklyDays = service.noOfTimesWeekly;
     const maxDailyHours = studentService.noOfPracticalHours;
     const allowedDays =
       studentService.allowedDays
         ?.split(",")
         .map((day) => day.trim().toLowerCase()) || [];
-
-    // Group requested slots by day
     const slotsByDay = {};
     for (const slot of slots) {
       const day = slot.day.toLowerCase();
-
-      // Check if the day is allowed
       if (allowedDays.length && !allowedDays.includes(day)) {
         return {
           success: false,
-          error: `Booking not allowed on ${
-            day.charAt(0).toUpperCase() + day.slice(1)
-          }.`,
+          error: `Booking not allowed on ${day.charAt(0).toUpperCase() + day.slice(1)}.`,
         };
       }
-
       if (!slotsByDay[day]) slotsByDay[day] = [];
       slotsByDay[day].push(slot);
     }
-
-    // Enforce max hours per day
     for (const [day, daySlots] of Object.entries(slotsByDay)) {
       if (daySlots.length > maxDailyHours) {
         return {
@@ -144,16 +127,11 @@ export const practicalPeriodService = async ({
         };
       }
     }
-
-    // Enforce max number of different days per week
     const requestedDays = Object.keys(slotsByDay);
-
-    // Count already booked distinct days for this week
     const currentWeekStart = new Date();
     currentWeekStart.setDate(
       currentWeekStart.getDate() - currentWeekStart.getDay()
     );
-
     const alreadyBookedSlots = await bookings.findAll({
       where: {
         studentId,
@@ -161,30 +139,24 @@ export const practicalPeriodService = async ({
       },
       include: [{ model: timeSlots, attributes: ["day"] }],
     });
-
     const alreadyBookedDays = new Set(
       alreadyBookedSlots
         .map((b) => b.TimeSlot?.day?.toLowerCase())
         .filter(Boolean)
     );
-
     const totalDays = new Set([...requestedDays, ...alreadyBookedDays]);
-
     if (totalDays.size > maxWeeklyDays) {
       return {
         success: false,
         error: `You can only book up to ${maxWeeklyDays} different day(s) per week.`,
       };
     }
-
-    // Proceed to create bookings
     for (const slot of slots) {
       if (slot.isBooked) {
         const existingBooking = await bookings.findOne({
           where: { timeSlotId: slot.timeSlotId },
           order: [["createdAt", "DESC"]],
         });
-
         if (existingBooking && existingBooking.status !== "completed") {
           return {
             success: false,
@@ -192,25 +164,44 @@ export const practicalPeriodService = async ({
           };
         }
       }
-
       const alreadyBooked = await bookings.findOne({
         where: {
           timeSlotId: slot.timeSlotId,
           studentId,
         },
       });
-
       if (alreadyBooked) {
         return {
           success: false,
           error: `Student already booked this time slot (${slot.timeSlotId}).`,
         };
       }
-
+      // Randomly pick an available instructor for the same time slot
+      const availableInstructors = await instructorModel.findAll({
+        include: [
+          {
+            model: bookings,
+            as: "StaffBookings",
+            where: { timeSlotId: slot.timeSlotId },
+            required: false,
+          },
+        ],
+      });
+      const freeInstructors = availableInstructors.filter(
+        (inst) => inst.StaffBookings.length === 0
+      );
+      if (!freeInstructors.length) {
+        return {
+          success: false,
+          error: `No available instructors for time slot ID ${slot.timeSlotId}.`,
+        };
+      }
+      const randomIndex = Math.floor(Math.random() * freeInstructors.length);
+      const selectedInstructor = freeInstructors[randomIndex];
       const booking = await bookings.create({
         timeSlotId: slot.timeSlotId,
         studentId,
-        driverId,
+        driverId: selectedInstructor.staffId,
       });
 
       slot.isBooked = true;
@@ -303,3 +294,5 @@ export const getAllPracticalSessions= async  () => {
     };
   }
 };
+
+

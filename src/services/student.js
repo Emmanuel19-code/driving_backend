@@ -6,34 +6,30 @@ export const findStudentByEmail = async (email) => {
   return await studentModel.findOne({ where: { email } });
 };
 
+//adding a new student to the system
 export const createStudent = async (value) => {
   try {
     const service = await serviceModels.findOne({
       where: { serviceId: value.serviceId },
     });
-
     if (!service) {
       return {
         success: false,
         error: "This service has not been approved",
       };
     }
-
     const amountOwing = service.fee;
-
     // ✅ The model hook will auto-generate studentId and update gender count
     const student = await studentModel.create({
       ...value,
       amountOwing,
     });
-
     if (!student) {
       return {
         success: false,
         msg: "Could not add student. Try again.",
       };
     }
-
     const attachChosenService = await registeredSelectedService.create({
       studentId: student.studentId,
       serviceTypeId: service.serviceId,
@@ -42,14 +38,12 @@ export const createStudent = async (value) => {
       noOfPracticalHours: service.noOfPracticalHours,
       noOfTimesWeekly:service.noOfTimesWeekly
     });
-
     if (!attachChosenService) {
       return {
         success: false,
         msg: "Could not register service for student. Try again.",
       };
     }
-
     return {
       success: true,
       msg: "All registration processes completed successfully.",
@@ -72,6 +66,7 @@ export const allStudents = async () =>{
     return await studentModel.findAll();
 }
 
+//Counting the total Students registered
 export const countStudents = async()=>{
   try {
     const data = await studentIdCounter.findAll();
@@ -125,6 +120,41 @@ export const getStudentsScheduledForTomorrow = async () => {
     return {
       success: false,
       error: error.message || "Failed to fetch tomorrow's bookings",
+    };
+  }
+};
+
+
+//Fetching students who have completed the theory class
+export const fetchCompletedStudents = async () => {
+  try {
+    const completedStudents = await registeredSelectedService.findAll({
+      where: {
+        classCompleted: "true",
+        practicalStatus: "not started",
+      },
+      include: [
+        {
+          model: studentModel,
+          attributes: ["studentId", "firstName", "lastName", "otherName"],
+        },
+      ],
+    });
+    const result = completedStudents.map((record) => {
+      const student = record.Student;
+      return {
+        studentId: student?.studentId,
+        fullName: `${student?.firstName} ${student?.lastName} ${student?.otherName}`,
+      };
+    });
+    return {
+      success: true,
+      data: result,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      error: error.message || "Failed to fetch students who completed class.",
     };
   }
 };
