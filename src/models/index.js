@@ -10,83 +10,62 @@ import carDocumentSchema from "./carDocuments.js";
 import bookSlotModel from "./bookSlots.js";
 import timeSlotModel from "./timeSlots.js";
 import studentRegisteredService from "./registeredStudentChosenService.js";
+import UserModel from "./userModel.js";
+import TenantModel from "./tenantModel.js";
 
-let studentModel;
-let instructorModel;
-let studentIdCounter;
-let serviceModels;
-let paymentModel;
-let carModel;
-let fuelmodel;
-let carDocModel;
-let timeSlots;
-let bookings;
-let registeredSelectedService;
 export const registerModels = (sequelize) => {
   const StudentIdCounter = StudentIdCounterModel(sequelize);
   const InstructorIdCounter = InstructorIdCounterModel(sequelize);
-  paymentModel = PaymentModel(sequelize);
-  serviceModels = serviceModel(sequelize);
-  carModel = companyCarModel(sequelize);
-  fuelmodel = recordFuel(sequelize);
-  carDocModel = carDocumentSchema(sequelize);
-  bookings = bookSlotModel(sequelize);
-  registeredSelectedService = studentRegisteredService(sequelize);
-  studentModel = StudentModel(sequelize, StudentIdCounter);
-  instructorModel = InstructorModel(sequelize, InstructorIdCounter);
-  timeSlots = timeSlotModel(sequelize);
-  studentIdCounter = StudentIdCounter;
 
-  // Booking relationships
-  bookings.belongsTo(timeSlots, {
-    foreignKey: "timeSlotId",
-    targetKey: "timeSlotId",
-  });
-  timeSlots.hasMany(bookings, {
-    foreignKey: "timeSlotId",
-    sourceKey: "timeSlotId",
-  });
+  const studentModel = StudentModel(sequelize, StudentIdCounter);
+  const instructorModel = InstructorModel(sequelize, InstructorIdCounter);
+  const serviceModels = serviceModel(sequelize);
+  const paymentModel = PaymentModel(sequelize);
+  const carModel = companyCarModel(sequelize);
+  const fuelmodel = recordFuel(sequelize);
+  const carDocModel = carDocumentSchema(sequelize);
+  const bookings = bookSlotModel(sequelize);
+  const timeSlots = timeSlotModel(sequelize);
+  const registeredSelectedService = studentRegisteredService(sequelize);
 
-  bookings.belongsTo(studentModel, {
-    foreignKey: "studentId",
-    targetKey: "studentId",
-  });
-  studentModel.hasMany(bookings, {
-    foreignKey: "studentId",
-    sourceKey: "studentId",
-  });
+  // Define relationships
+  bookings.belongsTo(timeSlots, { foreignKey: "timeSlotId", targetKey: "timeSlotId" });
+  timeSlots.hasMany(bookings, { foreignKey: "timeSlotId", sourceKey: "timeSlotId" });
 
-  bookings.belongsTo(instructorModel, {
-    foreignKey: "driverId",
-    targetKey: "staffId",
-    as: "Staff",
-  });
-  instructorModel.hasMany(bookings, {
-    foreignKey: "driverId",
-    sourceKey: "staffId",
-    as: "StaffBookings",
-  });
-  registeredSelectedService.belongsTo(studentModel, {
-    foreignKey: "studentId",
-    targetKey: "studentId",
-  });
-  studentModel.hasMany(registeredSelectedService, {
-    foreignKey: "studentId",
-    sourceKey: "studentId",
-  });
+  bookings.belongsTo(studentModel, { foreignKey: "studentId", targetKey: "studentId" });
+  studentModel.hasMany(bookings, { foreignKey: "studentId", sourceKey: "studentId" });
+
+  bookings.belongsTo(instructorModel, { foreignKey: "driverId", targetKey: "staffId", as: "Staff" });
+  instructorModel.hasMany(bookings, { foreignKey: "driverId", sourceKey: "staffId", as: "StaffBookings" });
+
+  registeredSelectedService.belongsTo(studentModel, { foreignKey: "studentId", targetKey: "studentId" });
+  studentModel.hasMany(registeredSelectedService, { foreignKey: "studentId", sourceKey: "studentId" });
+
+  return {
+    studentModel,
+    instructorModel,
+    studentIdCounter: StudentIdCounter,
+    serviceModels,
+    paymentModel,
+    carModel,
+    fuelmodel,
+    carDocModel,
+    timeSlots,
+    bookings,
+    registeredSelectedService,
+  };
 };
 
+let tenantModel, userModel;
 
-export {
-  studentModel,
-  instructorModel,
-  studentIdCounter,
-  serviceModels,
-  paymentModel,
-  carModel,
-  fuelmodel,
-  carDocModel,
-  timeSlots,
-  bookings,
-  registeredSelectedService,
+export const registerAccessModels = (sequelize) => {
+  userModel = UserModel(sequelize);
+  tenantModel = TenantModel(sequelize);
+
+  userModel.belongsTo(tenantModel, { foreignKey: "tenantId", targetKey: "tenantId" });
+  tenantModel.hasMany(userModel, { foreignKey: "tenantId", sourceKey: "tenantId" });
+
+  return { userModel, tenantModel };
 };
+
+export { tenantModel, userModel };

@@ -1,49 +1,63 @@
+import { Op } from "sequelize";
 import logger from "../config/logger.js";
-import {studentModel,studentIdCounter, serviceModels, registeredSelectedService, timeSlots} from "../models/index.js"
 
-
-export const findStudentByEmail = async (email) => {
+// Find student by email
+export const findStudentByEmail = async (email, models) => {
+  const { studentModel } = models;
   return await studentModel.findOne({ where: { email } });
 };
 
-//adding a new student to the system
-export const createStudent = async (value) => {
+// Add new student
+export const createStudent = async (value, models) => {
   try {
+    const {
+      studentModel,
+      serviceModels,
+      registeredSelectedService,
+      studentIdCounter
+    } = models;
+
     const service = await serviceModels.findOne({
       where: { serviceId: value.serviceId },
     });
+
     if (!service) {
       return {
         success: false,
         error: "This service has not been approved",
       };
     }
+
     const amountOwing = service.fee;
-    // ✅ The model hook will auto-generate studentId and update gender count
+
     const student = await studentModel.create({
       ...value,
       amountOwing,
     });
+
     if (!student) {
       return {
         success: false,
         msg: "Could not add student. Try again.",
       };
     }
+
     const attachChosenService = await registeredSelectedService.create({
       studentId: student.studentId,
       serviceTypeId: service.serviceId,
       totalDurationForService: service.totalDuration,
       noOfDaysInClass: service.noOfDaysInClass,
       noOfPracticalHours: service.noOfPracticalHours,
-      noOfTimesWeekly:service.noOfTimesWeekly
+      noOfTimesWeekly: service.noOfTimesWeekly,
     });
+
     if (!attachChosenService) {
       return {
         success: false,
         msg: "Could not register service for student. Try again.",
       };
     }
+
     return {
       success: true,
       msg: "All registration processes completed successfully.",
@@ -57,61 +71,61 @@ export const createStudent = async (value) => {
   }
 };
 
+// Get single student
+export const getStudent = async (studentId, models) => {
+  return await models.studentModel.findOne({ where: { studentId } });
+};
 
-export const getStudent = async (studentId) =>{
-   return await studentModel.findOne({where:{studentId}})
-}
+// Get all students
+export const allStudents = async (models) => {
+  return await models.studentModel.findAll();
+};
 
-export const allStudents = async () =>{
-    return await studentModel.findAll();
-}
-
-//Counting the total Students registered
-export const countStudents = async()=>{
+// Count all registered students
+export const countStudents = async (models) => {
   try {
-    const data = await studentIdCounter.findAll();
-    if(!data)
-    {
+    const data = await models.studentIdCounter.findAll();
+    if (!data) {
       return {
-         success:false,
-         msg:"Could not fetch data"
-      }
+        success: false,
+        msg: "Could not fetch data",
+      };
     }
     return {
-       success:true,
-       msg:data
-    }
+      success: true,
+      msg: data,
+    };
   } catch (error) {
     return {
       success: false,
-      msg: error.message || "Failed to generate time slots.",
+      msg: error.message || "Failed to count students.",
     };
   }
- 
-}
+};
 
-export const searchStudent = async ()=>{
-  
-}
-
-
-//getting students scheduled for the following day practicals
-export const getStudentsScheduledForTomorrow = async () => {
+// Get students scheduled for tomorrow
+export const getStudentsScheduledForTomorrow = async (models) => {
   try {
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
-    const dayOfWeek = tomorrow.toLocaleDateString("en-US", { weekday: "long" }).toLowerCase();
-    // Step 1: Get all time slots for tomorrow
+    const dayOfWeek = tomorrow
+      .toLocaleDateString("en-US", { weekday: "long" })
+      .toLowerCase();
+
+    const { timeSlots, bookings, studentModel } = models;
+
     const tomorrowSlots = await timeSlots.findAll({
       where: { day: { [Op.eq]: dayOfWeek } },
     });
-    const slotIds = tomorrowSlots.map(slot => slot.timeSlotId);
+
+    const slotIds = tomorrowSlots.map((slot) => slot.timeSlotId);
     if (!slotIds.length) return { success: true, data: [] };
-    // Step 2: Get all bookings for those time slots
+
     const tomorrowBookings = await bookings.findAll({
       where: { timeSlotId: { [Op.in]: slotIds } },
       include: [{ model: studentModel }],
     });
+
     return {
       success: true,
       data: tomorrowBookings,
@@ -124,10 +138,11 @@ export const getStudentsScheduledForTomorrow = async () => {
   }
 };
 
-
-//Fetching students who have completed the theory class
-export const fetchCompletedStudents = async () => {
+// Get students who have completed theory
+export const fetchCompletedStudents = async (models) => {
   try {
+    const { registeredSelectedService, studentModel } = models;
+
     const completedStudents = await registeredSelectedService.findAll({
       where: {
         classCompleted: "true",
@@ -140,6 +155,7 @@ export const fetchCompletedStudents = async () => {
         },
       ],
     });
+
     const result = completedStudents.map((record) => {
       const student = record.Student;
       return {
@@ -147,6 +163,7 @@ export const fetchCompletedStudents = async () => {
         fullName: `${student?.firstName} ${student?.lastName} ${student?.otherName}`,
       };
     });
+
     return {
       success: true,
       data: result,

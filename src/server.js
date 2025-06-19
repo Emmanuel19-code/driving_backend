@@ -1,7 +1,7 @@
 import {} from "dotenv/config";
 import app from "./app.js";
 import initializeDatabase from "./config/db.js";
-import { registerModels } from "./models/index.js";
+import { registerAccessModels, registerModels } from "./models/index.js";
 import { swaggerDocs } from "./config/swagger.js";
 import logger from "./config/logger.js";
 import checkCarDocNotification from "./cronJobs/checkcarDocNotification.js";
@@ -9,10 +9,11 @@ import checkCarDocNotification from "./cronJobs/checkcarDocNotification.js";
 const PORT = process.env.PORT || 5000;
 const startServer = async () => {
   try {
-    const sequelize = await initializeDatabase();
-    await sequelize.authenticate();
-    registerModels(sequelize);
-    await sequelize.sync();
+    //handling the general Access Database
+    const centralSequelize = await initializeDatabase();
+    await centralSequelize.authenticate();
+    registerAccessModels(centralSequelize)
+    await centralSequelize.sync();
     await checkCarDocNotification();
     app.listen(PORT, () => {
       swaggerDocs(app, PORT);

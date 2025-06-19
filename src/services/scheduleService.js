@@ -1,13 +1,5 @@
 import { parse, addMinutes, isBefore, format } from "date-fns";
 import logger from "../config/logger.js";
-import {
-  bookings,
-  instructorModel,
-  registeredSelectedService,
-  serviceModels,
-  studentModel,
-  timeSlots,
-} from "../models/index.js";
 import { Op } from "sequelize";
 
 //generate the timeslots

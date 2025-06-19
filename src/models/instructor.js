@@ -5,6 +5,7 @@ const InstructorModel = (sequelize,InstructorIdCounter) => {
   const Staff = sequelize.define('Staff', {
     staffId: {
       type: DataTypes.STRING,
+      primaryKey: true,
     },
     fullName: {
       type: DataTypes.STRING,

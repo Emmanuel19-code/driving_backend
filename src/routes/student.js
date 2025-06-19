@@ -10,10 +10,12 @@ import {
   createBookings,
   markAttendance,
 } from "../controllers/scheduleController.js";
+import { authMiddleware } from "../middlewares/authMiddleWare.js";
+import { tenantContextMiddleware } from "../middlewares/tenantContextMiddleWare.js";
 
 const router = express.Router();
 
-router.post("/add_student", registerStudent);
+router.post("/add_student",authMiddleware,tenantContextMiddleware,registerStudent);
 router.get("/fetch_student", fetchAllStudent);
 router.get("/search_studet", fetchStudent);
 router.get("/population_info", studentPopulationByYear);

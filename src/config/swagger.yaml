@@ -17,6 +17,10 @@ tags:
     description: Operations relating to generating timeSlots and handling assigning
   - name: Staff
     description: Operations relating to Staff
+  - name: Application_Customer_Setup
+    description: Handles every operation that is used to setup a company
+  - name: Company_Auth_Handler
+    description: Handle Everything in relation to access the system as a company
 
 paths:
 
@@ -26,6 +30,8 @@ paths:
       description: Create a new company car record in the system
       tags:
         - Company Car
+      security:
+        - bearerAuth: []
       requestBody:
         required: true
         content:
@@ -1655,6 +1661,275 @@ paths:
                   error:
                     type: string
                     example: Failed to fetch completed students
+
+  /api/v1/system_security/login:
+    post:
+      tags:
+        - Company_Auth_Handler
+      summary: User Login
+      description: Authenticates a user and returns a JWT token with tenant details.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - userName
+                - password
+              properties:
+                userName:
+                  type: string
+                  format: userName
+                  example: userName
+                password:
+                  type: string
+                  format: password
+                  example: Secure123!
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      token:
+                        type: string
+                        example: eyJhbGciOiJIUzI1NiIsInR5cCI6...
+                      user:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                            example: user_123
+                          name:
+                            type: string
+                            example: John Doe
+                          email:
+                            type: string
+                            format: email
+                            example: admin@drivesafe.com
+                          role:
+                            type: string
+                            example: admin
+                      tenant:
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                            example: DriveSafe School
+                          tenantId:
+                            type: string
+                            example: tnt_1718803832472
+        '400':
+          description: Missing or invalid request body
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    example: Email and password are required
+        '401':
+          description: Unauthorized or invalid credentials
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    example: Invalid email or password
+
+  /api/v1/tenants/add_company:
+    post:
+      tags:
+        - Application_Customer_Setup
+      summary: Create a new tenant (company) and an admin user
+      description: Adds a new company (tenant) to the system and sets up an admin user.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - email
+                - password
+              properties:
+                name:
+                  type: string
+                  example: DriveSafe Academy
+                  description: Name of the company/tenant
+                email:
+                  type: string
+                  example: admin@drivesafe.com
+                  description: Admin user email address
+                password:
+                  type: string
+                  example: StrongPassword123
+                  description: Password for the admin user
+                dbDialect:
+                  type: string
+                  enum: [mysql, postgres, mssql]
+                  example: mysql
+                  description: (Optional) Type of SQL database to use
+      responses:
+        '201':
+          description: Tenant created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        example: Tenant and admin user created successfully
+                      tenantId:
+                        type: string
+                        format: uuid
+                        example: 123e4567-e89b-12d3-a456-426614174000
+                      dbName:
+                        type: string
+                        example: db_drivesafe_academy
+                      email:
+                        type: string
+                        example: admin@drivesafe.com
+        '400':
+          description: Bad Request (validation or logic error)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    oneOf:
+                      - type: string
+                        example: Email already exists
+                      - type: array
+                        items:
+                          type: string
+                        example: ["Company name is required", "Email must be valid"]
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    example: Internal Server Error
+
+  /api/v1/tenants/all_registered_companies:
+    get:
+      tags:
+        - Application_Customer_Setup
+      summary: Get all registered companies
+      description: Returns a list of all registered tenants (companies) in the system. This should be restricted to the main system admin.
+      responses:
+        '200':
+          description: List of tenants retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        tenantId:
+                          type: string
+                          format: uuid
+                          example: "1a2b3c4d-1234-5678-9101-abcdef123456"
+                        name:
+                          type: string
+                          example: DriveSafe Driving School
+                        dbName:
+                          type: string
+                          example: drivesafe_db
+                        dbUser:
+                          type: string
+                          example: tenantuser
+                        dbHost:
+                          type: string
+                          example: localhost
+                        dbPort:
+                          type: integer
+                          example: 3306
+                        dbDialect:
+                          type: string
+                          example: mysql
+                        status:
+                          type: string
+                          enum: [active, inactive]
+                          example: active
+                        createdAt:
+                          type: string
+                          format: date-time
+                          example: "2025-06-19T12:00:00.000Z"
+                        updatedAt:
+                          type: string
+                          format: date-time
+                          example: "2025-06-19T12:10:00.000Z"
+        '400':
+          description: Failed to fetch tenants due to client-side issue
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    example: Failed to fetch registered companies
+        '500':
+          description: Server-side error while processing request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    example: Internal server error while fetching tenants
 
 components:
   schemas:
