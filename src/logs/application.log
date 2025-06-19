@@ -380,3 +380,4 @@ notNull Violation: Student.amountOwing cannot be null
 2025-06-17T12:10:31.294Z error notNull Violation: studentChosenService.noOfTimesWeekly cannot be null
 2025-06-17T12:15:49.776Z error Error creating bookings: TimeSlot is not associated to Booking!
 2025-06-17T13:23:10.235Z error handleAttendanceForPracticals error: studentChosenService is not defined
+2025-06-17T20:41:06.629Z error Error
