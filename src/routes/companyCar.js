@@ -4,8 +4,8 @@ import {
   addCompanyCar,
   fetchTotalMonthlyAmontSpentFuel,
   fuelRefill,
-  getAllCars,
   getCar,
+  getOnlyCarRegistrationNumber,
   montlyLitresCarConsumption,
   updateCarDocumentStatus,
 } from "../controllers/companyCarController.js";
@@ -15,8 +15,8 @@ import { tenantContextMiddleware } from "../middlewares/tenantContextMiddleWare.
 const router = express.Router();
 
 router.post("/add_car",authMiddleware,tenantContextMiddleware, addCompanyCar);
-router.get("/get_cars",authMiddleware,tenantContextMiddleware,getAllCars);
-router.get("/search_car:carId",authMiddleware,tenantContextMiddleware,getCar);
+router.get("/get_car_registration_number",authMiddleware,tenantContextMiddleware,getOnlyCarRegistrationNumber);
+router.get("/search_car/:carRegistrationNumber",authMiddleware,tenantContextMiddleware,getCar);
 router.post("/recharge_fuel",authMiddleware,tenantContextMiddleware,fuelRefill);
 router.get("/monthly-amount",authMiddleware,tenantContextMiddleware,fetchTotalMonthlyAmontSpentFuel);
 router.get("/monthly-litres-car-consumption",authMiddleware,tenantContextMiddleware,montlyLitresCarConsumption);

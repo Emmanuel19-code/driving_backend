@@ -18,14 +18,14 @@ export const registerCompanyCar = async (tenantContext, value) => {
   }
 };
 
-export const allcars = async (tenantContext) => {
+export const gettingRegistrationNumberOfCars = async (tenantContext) => {
   const { carModel } = tenantContext.models;
   return await carModel.findAll({ attributes: ["carRegistrationNumber"] });
 };
 
 export const searchCar = async (tenantContext, value) => {
   const { carModel } = tenantContext.models;
-  return await carModel.findOne({ where: { carId: value } });
+  return await carModel.findOne({ where: { carRegistrationNumber: value } });
 };
 
 export const handlefuelRecharge = async (tenantContext, value) => {
