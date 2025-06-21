@@ -153,73 +153,25 @@ paths:
                     type: string
                     example: Internal server error
 
-  /api/v1/companycar/search_car/{carId}:
+  /api/v1/companycar/search_car/{carRegistrationNumber}:
     get:
       summary: Getting a particular registered car
       description: Individual Car
       tags:
         - Company Car
       parameters:
-        - in: query
-          name: carId
+        - name: carRegistrationNumber         
+          in: path
+          required: true                      
           schema:
             type: string
-          description: Filter by carId
+          description: Filter by carRegistrationNumber
       responses:
-        '200':
+        '200':  # ✅ Properly nested under 'responses'
           description: A car
-          content:
-           application/json:
-            schema:
-              type: object
-              properties:
-                carId:
-                  type: string
-                  example: 1234569
-                carModel:
-                  type: string
-                  example: Vitz
-                carColour: 
-                  type: string
-                  example: red
-                carInsuaranceExpiry:
-                  type: string
-                  example: ""
-                carTransmissionType:
-                  type: string
-                  example: manual
-                carRoadWorthyExpiry:
-                  type: string
-                  example: ""
-                carRegistrationNumber:
-                  type: string
-                  example: GT-7391-10
-        '500':
-          description: server error
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  msg:
-                    type: string
-                    example: Internal server error
-
-
-  /api/v1/companycar/get_cars:
-    get:
-      summary: Fetch All Registered Company cars
-      description: Getting cars registered in the system
-      tags:
-        - Company Car
-      responses:
-        '200':
-          description: A list of all cars
-          content:
-           application/json:
-            schema:
-              type: array
-              items:
                 type: object
                 properties:
                   carId:
@@ -240,6 +192,39 @@ paths:
                   carRoadWorthyExpiry:
                     type: string
                     example: ""
+                  carRegistrationNumber:
+                    type: string
+                    example: GT-7391-10
+        '500':  # ✅ Also correctly nested
+          description: server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msg:
+                    type: string
+                    example: Internal server error
+
+
+
+
+  /api/v1/companycar/get_car_registration_number:
+    get:
+      summary: Fetch only the registration Number of Cars in the system
+      description: Get Registration Number of Cars
+      tags:
+        - Company Car
+      responses:
+        '200':
+          description: A list of all cars registration number
+          content:
+           application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                properties:
                   carRegistrationNumber:
                     type: string
                     example: GT-7391-10

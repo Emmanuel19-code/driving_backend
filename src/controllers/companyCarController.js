@@ -1,8 +1,8 @@
 import logger from "../config/logger.js";
 import {
-  allcars,
   allMonthsAmount,
   createCarDocument,
+  gettingRegistrationNumberOfCars,
   handleCarDocumentsRenewal,
   handlefuelRecharge,
   monthlyFuel,
@@ -54,9 +54,9 @@ export const markCarAsFaulty = async (req, res) => {
   }
 };
 
-export const getAllCars = async (req, res) => {
+export const getOnlyCarRegistrationNumber = async (req, res) => {
   try {
-    const cars = await allcars(req.tenantContext);
+    const cars = await gettingRegistrationNumberOfCars(req.tenantContext);
     res.status(200).json(cars);
   } catch (error) {
     logger.error(error);
@@ -66,12 +66,14 @@ export const getAllCars = async (req, res) => {
 
 export const getCar = async (req, res) => {
   try {
-    const { carId } = req.params;
-    if (!carId) {
-      return res.status(400).json({ msg: "Provide car Id" });
+    const { carRegistrationNumber } = req.params;
+    console.log(carRegistrationNumber);
+    
+    if (!carRegistrationNumber) {
+      return res.status(400).json({ msg: "Provide carRegistrationNumber" });
     }
 
-    const car = await searchCar(req.tenantContext, carId);
+    const car = await searchCar(req.tenantContext, carRegistrationNumber);
     if (!car) {
       return res.status(404).json({ msg: "Car not found" });
     }
@@ -82,6 +84,8 @@ export const getCar = async (req, res) => {
     res.status(500).json({ msg: "Internal server error" });
   }
 };
+
+//eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyY2Q2ZDViNy1mZTNkLTRmMDgtYTQ5NC02OTNlMjZhMTg1NDIiLCJ0ZW5hbnRJZCI6IjE3MjgxNmI2LTY2NmQtNGY3Mi05ODcwLTRiNmMyODdjODUwYyIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1MDQxMDk2NiwiZXhwIjoxNzUwNDk3MzY2fQ._8K4HXffHIPhFgltyG6YoMNiF4Nhx7MECPYtV0CAQN4
 
 export const assignCar = async (req, res) => {
   // Implementation pending

@@ -24,7 +24,7 @@ export const createStudent = async (value, models) => {
     if (!service) {
       return {
         success: false,
-        error: "This service has not been approved",
+        error: "The selected service for the student has not been approved",
       };
     }
 

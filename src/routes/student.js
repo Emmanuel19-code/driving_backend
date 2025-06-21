@@ -16,11 +16,11 @@ import { tenantContextMiddleware } from "../middlewares/tenantContextMiddleWare.
 const router = express.Router();
 
 router.post("/add_student",authMiddleware,tenantContextMiddleware,registerStudent);
-router.get("/fetch_student", fetchAllStudent);
-router.get("/search_studet", fetchStudent);
-router.get("/population_info", studentPopulationByYear);
-router.post("/assign_pick_periods", createBookings);
-router.put("/mark_attendance/:studentId", markAttendance);
-router.get("/completed_theory_class", getStudentsCompletedTheoryClass);
+router.get("/fetch_student",authMiddleware,tenantContextMiddleware, fetchAllStudent);
+router.get("/search_studet", authMiddleware,tenantContextMiddleware,fetchStudent);
+router.get("/population_info", authMiddleware,tenantContextMiddleware,studentPopulationByYear);
+router.post("/assign_pick_periods", authMiddleware,tenantContextMiddleware,createBookings);
+router.put("/mark_attendance/:studentId", authMiddleware,tenantContextMiddleware,markAttendance);
+router.get("/completed_theory_class",authMiddleware,tenantContextMiddleware ,getStudentsCompletedTheoryClass);
 
 export default router;
