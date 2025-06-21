@@ -11,13 +11,11 @@ export const generateSchedule = async (req, res) => {
         message: "Please provide 'days', 'startTime', and 'endTime'.",
       });
     }
-
     const result = await generateAllTimeSlots({
       days,
       startTime,
       endTime,
     });
-
     return res.status(201).json(result);
   } catch (error) {
     console.error("Error in generateSchedule controller:", error.message);
@@ -58,11 +56,9 @@ export const createBookings = async (req, res) => {
       studentId: value.studentId,
       driverId: value.driverId,
     });
-
     if (!result.success) {
       return res.status(409).json({ success: false, error: result.error });
     }
-
     return res.status(201).json({
       success: true,
       message: "Booking(s) created successfully.",

@@ -10,7 +10,11 @@ import {
   searchCar,
   totalLitresConsumedMonthlyByEachCar,
 } from "../services/companyCarService.js";
-import { carDocumentValidate, carValidate, fuelRechargeValidate } from "../validations/car.js";
+import {
+  carDocumentValidate,
+  carValidate,
+  fuelRechargeValidate,
+} from "../validations/car.js";
 
 export const addCompanyCar = async (req, res) => {
   try {
@@ -19,8 +23,7 @@ export const addCompanyCar = async (req, res) => {
       return res.status(400).json({ error: error.details[0].message });
     }
 
-    const result = await registerCompanyCar(value); // Await the result
-
+    const result = await registerCompanyCar(req.tenantContext, value);
     if (!result.success) {
       return res
         .status(409)
@@ -30,9 +33,9 @@ export const addCompanyCar = async (req, res) => {
     res.status(200).json({ car: result.data });
   } catch (error) {
     logger.error(error);
-    return res.status(500).json({
-      msg: error.message || "Internal server error",
-    });
+    return res
+      .status(500)
+      .json({ msg: error.message || "Internal server error" });
   }
 };
 
@@ -40,27 +43,24 @@ export const markCarAsFaulty = async (req, res) => {
   try {
     const carId = req.params;
     if (!carId) {
-      return res.status(400).json({
-        msg: "Provide CarId",
-      });
+      return res.status(400).json({ msg: "Provide CarId" });
     }
+    // Implementation pending
   } catch (error) {
     logger.error(error);
-    return res.status(400).json({
-      msg: error.message || "Internal server error",
-    });
+    return res
+      .status(400)
+      .json({ msg: error.message || "Internal server error" });
   }
 };
 
 export const getAllCars = async (req, res) => {
   try {
-    const cars = await allcars();
+    const cars = await allcars(req.tenantContext);
     res.status(200).json(cars);
   } catch (error) {
     logger.error(error);
-    res.status(500).json({
-      msg: "Internal server error",
-    });
+    res.status(500).json({ msg: "Internal server error" });
   }
 };
 
@@ -68,26 +68,24 @@ export const getCar = async (req, res) => {
   try {
     const { carId } = req.params;
     if (!carId) {
-      return res.status(400).json({
-        msg: "provide car Id",
-      });
+      return res.status(400).json({ msg: "Provide car Id" });
     }
-    const car = searchCar(carId);
+
+    const car = await searchCar(req.tenantContext, carId);
     if (!car) {
-      return res.status(404).json({
-        msg: "Cannot registered at the moment",
-      });
+      return res.status(404).json({ msg: "Car not found" });
     }
+
     res.status(200).json(car);
   } catch (error) {
     logger.error(error);
-    res.status(500).json({
-      msg: "Internal server error",
-    });
+    res.status(500).json({ msg: "Internal server error" });
   }
 };
 
-export const assignCar = async (req, res) => {};
+export const assignCar = async (req, res) => {
+  // Implementation pending
+};
 
 export const fuelRefill = async (req, res) => {
   try {
@@ -95,27 +93,25 @@ export const fuelRefill = async (req, res) => {
     if (error) {
       return res.status(400).json({ error: error.details[0].message });
     }
-    const result = await handlefuelRecharge(value);
+
+    const result = await handlefuelRecharge(req.tenantContext, value);
     if (!result.success) {
       return res
         .status(409)
         .json({ error: result.error || "Could not save the record" });
     }
-    res.status(201).json({
-      msg: result.msg,
-    });
+
+    res.status(201).json({ msg: result.msg });
   } catch (error) {
     logger.error(error);
-    res.status(500).json({
-      msg: "Internal server error",
-    });
+    res.status(500).json({ msg: "Internal server error" });
   }
 };
 
 export const fetchTotalMonthlyAmontSpentFuel = async (req, res) => {
   try {
     const year = parseInt(req.query.year) || new Date().getFullYear();
-    const result = await allMonthsAmount(year);
+    const result = await allMonthsAmount(req.tenantContext, year);
 
     if (!result.success) {
       return res.status(500).json({ msg: result.error });
@@ -128,27 +124,26 @@ export const fetchTotalMonthlyAmontSpentFuel = async (req, res) => {
     });
   } catch (error) {
     logger.error(error);
-    res.status(500).json({
-      msg: "Internal server error",
-    });
+    res.status(500).json({ msg: "Internal server error" });
   }
 };
 
 export const montlyLitresCarConsumption = async (req, res) => {
   try {
     const year = parseInt(req.query.year) || new Date().getFullYear();
-    const result = await totalLitresConsumedMonthlyByEachCar(year);
+    const result = await totalLitresConsumedMonthlyByEachCar(
+      req.tenantContext,
+      year
+    );
+
     if (!result.success) {
       return res.status(500).json({ msg: result.error });
     }
-    res.status(200).json({
-      data: result.data,
-    });
+
+    res.status(200).json({ data: result.data });
   } catch (error) {
     logger.error(error);
-    res.status(500).json({
-      msg: "Internal server error",
-    });
+    res.status(500).json({ msg: "Internal server error" });
   }
 };
 
@@ -156,34 +151,36 @@ export const IndividualMonthlyFuelSpent = async (req, res) => {
   try {
     const { month } = req.params;
     if (!month) {
-      return res.status(400).json({
-        msg: "provide the month you want to check",
-      });
+      return res
+        .status(400)
+        .json({ msg: "Provide the month you want to check" });
     }
-    const totalAmount = await monthlyFuel(month);
-    res.status(200).json({
-      totalAmount,
-    });
+
+    const totalAmount = await monthlyFuel(req.tenantContext, month); // assumes implementation exists
+    res.status(200).json({ totalAmount });
   } catch (error) {
     logger.error(error);
-    res.status(500).json({
-      msg: "Internal server error",
-    });
+    res.status(500).json({ msg: "Internal server error" });
   }
 };
 
 export const updateCarDocumentStatus = async (req, res) => {
   try {
     const { docId } = req.params;
-    const {error,value} = carDocumentValidate.validate(req.body)
+    const { error, value } = carDocumentValidate.validate(req.body);
     if (error) {
       return res.status(400).json({ message: error.details[0].message });
     }
 
-    const result = await handleCarDocumentsRenewal(docId, value);
+    const result = await handleCarDocumentsRenewal(
+      req.tenantContext,
+      docId,
+      value
+    );
     if (!result.success) {
       return res.status(400).json({ message: result.message });
     }
+
     return res.status(200).json({
       message: result.message,
       data: result.renewal,
@@ -194,17 +191,14 @@ export const updateCarDocumentStatus = async (req, res) => {
   }
 };
 
-
 export const addCarDocument = async (req, res) => {
   try {
     const { error, value } = carDocumentValidate.validate(req.body);
-
     if (error) {
       return res.status(400).json({ message: error.details[0].message });
     }
 
-    const result = await createCarDocument(value);
-
+    const result = await createCarDocument(req.tenantContext, value);
     if (!result.success) {
       return res.status(400).json({ message: result.message });
     }

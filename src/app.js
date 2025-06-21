@@ -6,6 +6,10 @@ import PaymentRouter from "./routes/payments.js"
 import CompanyCarRouter from "./routes/companyCar.js"
 import BookandHandleSchedules from "./routes/bookSchedule.js"
 import StaffRouter from "./routes/staff.js"
+import TenantRouter from "./routes/systemAdmin.js"
+import AllAuthRouter from "./routes/authSystem.js"
+import { globalRateLimiter } from './middlewares/rateLimiter.js'
+import helmet from "helmet"
 
 const app = express();
 
@@ -21,12 +25,19 @@ app.use(cors())
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+app.use(globalRateLimiter)
+app.use(helmet())
+
+app.disable("x-powered-by")
+
 app.use('/api/v1/students', StudentRouter);
 app.use("/api/v1/services",ServiceRouter);
 app.use("/api/v1/payment",PaymentRouter)
 app.use("/api/v1/companycar",CompanyCarRouter)
 app.use("/api/v1/bookingAndslots",BookandHandleSchedules)
 app.use("/api/v1/staff",StaffRouter)
+app.use("/api/v1/tenants",TenantRouter)
+app.use("/api/v1/system_security",AllAuthRouter)
 
 
 export default app;

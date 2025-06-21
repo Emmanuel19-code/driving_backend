@@ -1,16 +1,18 @@
-import { serviceModels } from "../models/index.js";
 
 
-export const addNewService = async (serviceData) =>{
-   return await serviceModels.create(serviceData)
-}
+export const addNewService = async (tenantContext, serviceData) => {
+  const { serviceModels } = tenantContext.models;
+  return await serviceModels.create(serviceData);
+};
 
-export const getServices = async () =>{
-    return await serviceModels.findAll();
-}
+export const getServices = async (tenantContext) => {
+  const { serviceModels } = tenantContext.models;
+  return await serviceModels.findAll();
+};
 
-export const deleteServices = async (serviceId) =>{
-    return await serviceModels.destroy({
-        where:{serviceId:serviceId}
-    })
-}
+export const deleteServices = async (tenantContext, serviceId) => {
+  const { serviceModels } = tenantContext.models;
+  return await serviceModels.destroy({
+    where: { serviceId },
+  });
+};

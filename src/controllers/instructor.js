@@ -1,5 +1,8 @@
 import logger from "../config/logger.js";
-import { createInstructor, findInstructorByEmail } from "../services/instructor.js";
+import {
+  createInstructor,
+  findInstructorByEmail,
+} from "../services/instructor.js";
 import { instructorSchema } from "../validations/instructor.js";
 
 export const registerInstructor = async (req, res) => {
@@ -8,18 +11,23 @@ export const registerInstructor = async (req, res) => {
     if (error) {
       return res.status(400).json({ error: error.details[0].message });
     }
-    const existingInstructor = await findInstructorByEmail(value.email); 
+
+    const tenantContext = req.tenantContext;
+
+    const existingInstructor = await findInstructorByEmail(tenantContext, value.email);
     if (existingInstructor) {
       return res.status(400).json({
         msg: "An account is registered with this email",
       });
     }
-    const result = await createInstructor(value);
+
+    const result = await createInstructor(tenantContext, value);
     if (!result.success) {
       return res.status(400).json({
         msg: result.msg || "Failed to register instructor",
       });
     }
+
     return res.status(201).json({
       msg: result.msg,
       data: result.data,
