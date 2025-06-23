@@ -5,6 +5,7 @@ import {
   createStudent,
   fetchCompletedStudents,
   findStudentByEmail,
+  getStudentsNotStartedPracticalService,
   getStudentsScheduledForTomorrow,
  // searchStudent,
 } from "../services/student.js";
@@ -111,4 +112,19 @@ export const fetchStudent = async (req, res) => {
     logger.error(error);
     res.status(500).json({ error: "Internal server error" });
   }
+};
+
+//getting students who have not started their practicals
+export const getStudentsNotStartedPracticalController = async (req, res) => {
+  const result = await getStudentsNotStartedPracticalService();
+  if (!result.success) {
+    return res.status(500).json({
+      success: false,
+      error: result.error,
+    });
+  }
+  return res.status(200).json({
+    success: true,
+    data: result.data,
+  });
 };

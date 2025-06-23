@@ -175,3 +175,66 @@ export const fetchCompletedStudents = async (models) => {
     };
   }
 };
+
+
+
+//getting students who have not started their practicals
+export const getStudentsNotStartedPracticalService = async () => {
+  try {
+    const { studentModel, registeredSelectedService } = tenantContext.models;
+    const students = await studentModel.findAll({
+      include: [
+        {
+          model: registeredSelectedService,
+          where: {
+            classCompleted: "true", // string because your model stores it as STRING
+            practicalStatus: "not started",
+          },
+          attributes: [],
+        },
+      ],
+      attributes: ["studentId", "firstName", "lastName", "email", "phoneOne"],
+    });
+    return {
+      success: true,
+      data: students,
+    };
+  } catch (error) {
+    logger.error("Error fetching students who haven't started practicals:", error);
+    return {
+      success: false,
+      error: error.message || "Unable to fetch students",
+    };
+  }
+};
+;
+
+//getting students who have started their practical service
+export const getStudentsWithPracticalStartedService = async () => {
+  try {
+    const { studentModel, registeredSelectedService } = tenantContext.models;
+    const students = await studentModel.findAll({
+      include: [
+        {
+          model: registeredSelectedService,
+          where: {
+            classCompleted: "true", 
+            practicalStatus: "started",
+          },
+          attributes: [],
+        },
+      ],
+      attributes: ["studentId", "firstName", "lastName", "email", "phoneOne"],
+    });
+    return {
+      success: true,
+      data: students,
+    };
+  } catch (error) {
+    logger.error("Error fetching students with 'started' practicals:", error);
+    return {
+      success: false,
+      error: error.message || "Failed to retrieve students",
+    };
+  }
+};

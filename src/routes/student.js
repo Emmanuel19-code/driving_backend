@@ -3,6 +3,7 @@ import {
   fetchAllStudent,
   fetchStudent,
   getStudentsCompletedTheoryClass,
+  getStudentsNotStartedPracticalController,
   registerStudent,
   studentPopulationByYear,
 } from "../controllers/student.js";
@@ -22,5 +23,6 @@ router.get("/population_info", authMiddleware,tenantContextMiddleware,studentPop
 router.post("/assign_pick_periods", authMiddleware,tenantContextMiddleware,createBookings);
 router.put("/mark_attendance/:studentId", authMiddleware,tenantContextMiddleware,markAttendance);
 router.get("/completed_theory_class",authMiddleware,tenantContextMiddleware ,getStudentsCompletedTheoryClass);
+router.get("/students/practical-not-started",authMiddleware,tenantContextMiddleware,getStudentsNotStartedPracticalController)
 
 export default router;
