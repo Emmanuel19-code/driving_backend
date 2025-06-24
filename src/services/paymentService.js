@@ -30,11 +30,9 @@ export const completingPayment = async (tenantContext, value) => {
     paymentMethod,
     amountPaid: actualPayment,
   });
-
   // 5. Update student’s remaining balance
   student.amountOwing = newAmountOwed;
   await student.save();
-
   return {
     msg: "Payment completed",
     amountPaid: actualPayment.toFixed(2),

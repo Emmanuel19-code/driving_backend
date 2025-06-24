@@ -2,6 +2,7 @@ import express from "express";
 import {
   fetchAllStudent,
   fetchStudent,
+  fetchStudentIdsAndNames,
   getStudentsCompletedTheoryClass,
   getStudentsNotStartedPracticalController,
   registerStudent,
@@ -24,5 +25,6 @@ router.post("/assign_pick_periods", authMiddleware,tenantContextMiddleware,creat
 router.put("/mark_attendance/:studentId", authMiddleware,tenantContextMiddleware,markAttendance);
 router.get("/completed_theory_class",authMiddleware,tenantContextMiddleware ,getStudentsCompletedTheoryClass);
 router.get("/students/practical-not-started",authMiddleware,tenantContextMiddleware,getStudentsNotStartedPracticalController)
+router.get("/student_names_studentId_only",authMiddleware,tenantContextMiddleware,fetchStudentIdsAndNames)
 
 export default router;

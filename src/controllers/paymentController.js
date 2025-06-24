@@ -8,7 +8,6 @@ export const makePayment = async (req, res) => {
     if (error) {
       return res.status(400).json({ success: false, error: error.details[0].message });
     }
-    // ⬇️ Pass tenantContext into service
     const result = await completingPayment(req.tenantContext, value);
     return res.status(200).json({
       success: true,

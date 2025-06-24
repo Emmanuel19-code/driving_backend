@@ -82,6 +82,51 @@ paths:
                     type: string
                     example: Internal server error
 
+  /api/v1/students/student_names_studentId_only:
+    get:
+      summary: Get basic student information
+      description: Returns a list of students with their studentId and combined full name.
+      tags:
+        - Students
+      responses:
+        '200':
+          description: A list of students
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        studentId:
+                          type: string
+                          example: STU123
+                        fullName:
+                          type: string
+                          example: John Michael Doe
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Internal server error.
+                  error:
+                    type: string
+                    example: Database connection failed.
+
 
   /api/v1/students/add_student:
     post:

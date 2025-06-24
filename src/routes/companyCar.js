@@ -17,7 +17,7 @@ const router = express.Router();
 router.post("/add_car",authMiddleware,tenantContextMiddleware, addCompanyCar);
 router.get("/get_car_registration_number",authMiddleware,tenantContextMiddleware,getOnlyCarRegistrationNumber);
 router.get("/search_car/:carRegistrationNumber",authMiddleware,tenantContextMiddleware,getCar);
-router.post("/recharge_fuel",authMiddleware,tenantContextMiddleware,fuelRefill);
+router.post("/record_fuel_refill",authMiddleware,tenantContextMiddleware,fuelRefill);
 router.get("/monthly-amount",authMiddleware,tenantContextMiddleware,fetchTotalMonthlyAmontSpentFuel);
 router.get("/monthly-litres-car-consumption",authMiddleware,tenantContextMiddleware,montlyLitresCarConsumption);
 router.post("/documents",authMiddleware,tenantContextMiddleware,addCarDocument)

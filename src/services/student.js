@@ -238,3 +238,27 @@ export const getStudentsWithPracticalStartedService = async () => {
     };
   }
 };
+
+
+export const getStudentIdsAndNames = async (studentModel) => {
+  try {
+    const students = await studentModel.findAll({
+      attributes: ["studentId", "firstName", "lastName", "otherName"],
+      raw: true,
+    });
+    const formatted = students.map((student) => ({
+      studentId: student.studentId,
+      fullName: `${student.firstName} ${student.otherName || ""} ${student.lastName}`.trim(),
+    }));
+    return {
+      success: true,
+      data: formatted,
+    };
+  } catch (error) {
+    logger.error("Error in getStudentIdsAndNames:", error.message);
+    return {
+      success: false,
+      error: error.message,
+    };
+  }
+};

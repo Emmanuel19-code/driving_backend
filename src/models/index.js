@@ -75,6 +75,15 @@ export const registerModels = (sequelize) => {
     foreignKey: "studentId",
     targetKey: "studentId",
   });
+  paymentModel.belongsTo(studentModel, {
+    foreignKey: "studentId",
+    targetKey: "studentId",
+  });
+
+  studentModel.hasMany(paymentModel, {
+    foreignKey: "studentId",
+    sourceKey: "studentId",
+  });
 
   return {
     studentModel,
