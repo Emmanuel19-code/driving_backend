@@ -2,6 +2,7 @@ import logger from "../config/logger.js";
 import {
   allMonthsAmount,
   createCarDocument,
+  getFuelRecords,
   gettingRegistrationNumberOfCars,
   handleCarDocumentsRenewal,
   handlefuelRecharge,
@@ -214,5 +215,20 @@ export const addCarDocument = async (req, res) => {
   } catch (error) {
     logger.error(error);
     res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+
+export const getAllFuels = async (req, res) => {
+  try {
+    const { startDate, endDate } = req.query;
+    const result = await getFuelRecords(req.tenantContext, startDate, endDate);
+    if (!result.success) {
+      return res.status(500).json({ success: false, error: result.error });
+    }
+    return res.status(200).json({ success: true, data: result.data });
+  } catch (error) {
+    logger.error(error);
+    return res.status(500).json({ success: false, message: "Internal server error" });
   }
 };

@@ -4,6 +4,7 @@ import {
   addCompanyCar,
   fetchTotalMonthlyAmontSpentFuel,
   fuelRefill,
+  getAllFuels,
   getCar,
   getOnlyCarRegistrationNumber,
   montlyLitresCarConsumption,
@@ -22,5 +23,6 @@ router.get("/monthly-amount",authMiddleware,tenantContextMiddleware,fetchTotalMo
 router.get("/monthly-litres-car-consumption",authMiddleware,tenantContextMiddleware,montlyLitresCarConsumption);
 router.post("/documents",authMiddleware,tenantContextMiddleware,addCarDocument)
 router.put("/documents/:docId/renew",authMiddleware,tenantContextMiddleware,updateCarDocumentStatus);
+router.get("/all_fuel_records",authMiddleware,tenantContextMiddleware,getAllFuels)
 
 export default router;
