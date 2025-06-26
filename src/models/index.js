@@ -9,7 +9,7 @@ import recordFuel from "./recordfuelLoad.js";
 import carDocumentSchema from "./carDocuments.js";
 import bookSlotModel from "./bookSlots.js";
 import timeSlotModel from "./timeSlots.js";
-import studentRegisteredService from "./registeredStudentChosenService.js";
+import studentRegisteredService from "./StudentChosenService.js";
 import UserModel from "./userModel.js";
 import TenantModel from "./tenantModel.js";
 
@@ -26,7 +26,7 @@ export const registerModels = (sequelize) => {
   const carDocModel = carDocumentSchema(sequelize);
   const bookings = bookSlotModel(sequelize);
   const timeSlots = timeSlotModel(sequelize);
-  const registeredSelectedService = studentRegisteredService(sequelize);
+  const studentChosenService = studentRegisteredService(sequelize);
 
   // Define relationships
   bookings.belongsTo(timeSlots, {
@@ -58,27 +58,25 @@ export const registerModels = (sequelize) => {
     as: "StaffBookings",
   });
 
-  registeredSelectedService.belongsTo(studentModel, {
+  studentChosenService.belongsTo(studentModel, {
     foreignKey: "studentId",
     targetKey: "studentId",
   });
-  studentModel.hasMany(registeredSelectedService, {
-    foreignKey: "studentId",
-    sourceKey: "studentId",
-  });
+studentModel.hasMany(studentChosenService, {
+  foreignKey: "studentId",
+  sourceKey: "studentId",
+  as: "chosenServices", // <-- this is the alias you must use
+});
 
-  studentModel.hasOne(registeredSelectedService, {
-    foreignKey: "studentId",
-    sourceKey: "studentId",
-  });
-  registeredSelectedService.belongsTo(studentModel, {
-    foreignKey: "studentId",
-    targetKey: "studentId",
-  });
   paymentModel.belongsTo(studentModel, {
     foreignKey: "studentId",
     targetKey: "studentId",
   });
+studentChosenService.belongsTo(serviceModels, {
+  foreignKey: "serviceTypeId",
+  targetKey: "serviceId",
+  as: "serviceInfo",
+});
 
   studentModel.hasMany(paymentModel, {
     foreignKey: "studentId",
@@ -96,7 +94,7 @@ export const registerModels = (sequelize) => {
     carDocModel,
     timeSlots,
     bookings,
-    registeredSelectedService,
+    studentChosenService,
   };
 };
 
