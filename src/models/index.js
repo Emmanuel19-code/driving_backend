@@ -68,20 +68,23 @@ studentModel.hasMany(studentChosenService, {
   as: "chosenServices", // <-- this is the alias you must use
 });
 
-  paymentModel.belongsTo(studentModel, {
-    foreignKey: "studentId",
-    targetKey: "studentId",
-  });
+paymentModel.belongsTo(studentModel, {
+  foreignKey: "paidBy",     
+  targetKey: "studentId",   
+  as: "student",            
+});
+
 studentChosenService.belongsTo(serviceModels, {
   foreignKey: "serviceTypeId",
   targetKey: "serviceId",
   as: "serviceInfo",
 });
 
-  studentModel.hasMany(paymentModel, {
-    foreignKey: "studentId",
-    sourceKey: "studentId",
-  });
+ studentModel.hasMany(paymentModel, {
+  foreignKey: "paidBy",
+  sourceKey: "studentId",
+});
+
 
   return {
     studentModel,

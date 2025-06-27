@@ -1,7 +1,7 @@
 import logger from "../config/logger.js";
 import {
   allStudents,
-  countStudents,
+  countCurrentYearStudents,
   createStudent,
   fetchCompletedStudents,
   findStudentByEmail,
@@ -50,10 +50,10 @@ export const fetchAllStudent = async (req, res) => {
 };
 
 // Count total students per year
-export const studentPopulationByYear = async (req, res) => {
+export const currentYearStudentPopulation = async (req, res) => {
   try {
     const { models } = req.tenantContext;
-    const result = await countStudents(models);
+    const result = await countCurrentYearStudents(models);
     if (!result.success) {
       return res.status(409).json(result.msg);
     }

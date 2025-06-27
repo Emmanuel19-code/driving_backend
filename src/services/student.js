@@ -16,32 +16,26 @@ export const createStudent = async (value, models) => {
       studentChosenService,
       studentIdCounter
     } = models;
-
     const service = await serviceModels.findOne({
       where: { serviceId: value.serviceId },
     });
-
     if (!service) {
       return {
         success: false,
         error: "The selected service for the student has not been approved",
       };
     }
-
     const amountOwing = service.fee;
-
     const student = await studentModel.create({
       ...value,
       amountOwing,
     });
-
     if (!student) {
       return {
         success: false,
         msg: "Could not add student. Try again.",
       };
     }
-
     const attachChosenService = await studentChosenService.create({
       studentId: student.studentId,
       serviceTypeId: service.serviceId,
@@ -50,14 +44,12 @@ export const createStudent = async (value, models) => {
       noOfPracticalHours: service.noOfPracticalHours,
       noOfTimesWeekly: service.noOfTimesWeekly,
     });
-
     if (!attachChosenService) {
       return {
         success: false,
         msg: "Could not register service for student. Try again.",
       };
     }
-
     return {
       success: true,
       msg: "All registration processes completed successfully.",
@@ -109,13 +101,16 @@ export const allStudents = async (models) => {
 
 
 // Count all registered students
-export const countStudents = async (models) => {
+export const countCurrentYearStudents = async (models) => {
   try {
-    const data = await models.studentIdCounter.findAll();
+    const currentYear = new Date().getFullYear();
+    const data = await models.studentIdCounter.findOne({
+      where: { year: currentYear },
+    });
     if (!data) {
       return {
         success: false,
-        msg: "Could not fetch data",
+        msg: "No data found for the current year.",
       };
     }
     return {
@@ -129,6 +124,7 @@ export const countStudents = async (models) => {
     };
   }
 };
+
 
 // Get students scheduled for tomorrow
 export const getStudentsScheduledForTomorrow = async (models) => {

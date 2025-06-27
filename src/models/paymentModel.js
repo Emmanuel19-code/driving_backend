@@ -25,6 +25,10 @@ const PaymentModel = (sequelize) => {
         type: DataTypes.DECIMAL(10, 2),
         allowNull: false,
       },
+      reason: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
     },
     {
       hooks: {
@@ -37,5 +41,6 @@ const PaymentModel = (sequelize) => {
 
   return Payment;
 };
+
 
 export default PaymentModel;
