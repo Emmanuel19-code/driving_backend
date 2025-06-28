@@ -13,36 +13,30 @@ export const createStudent = async (value, models) => {
     const {
       studentModel,
       serviceModels,
-      registeredSelectedService,
+      studentChosenService,
       studentIdCounter
     } = models;
-
     const service = await serviceModels.findOne({
       where: { serviceId: value.serviceId },
     });
-
     if (!service) {
       return {
         success: false,
         error: "The selected service for the student has not been approved",
       };
     }
-
     const amountOwing = service.fee;
-
     const student = await studentModel.create({
       ...value,
       amountOwing,
     });
-
     if (!student) {
       return {
         success: false,
         msg: "Could not add student. Try again.",
       };
     }
-
-    const attachChosenService = await registeredSelectedService.create({
+    const attachChosenService = await studentChosenService.create({
       studentId: student.studentId,
       serviceTypeId: service.serviceId,
       totalDurationForService: service.totalDuration,
@@ -50,14 +44,12 @@ export const createStudent = async (value, models) => {
       noOfPracticalHours: service.noOfPracticalHours,
       noOfTimesWeekly: service.noOfTimesWeekly,
     });
-
     if (!attachChosenService) {
       return {
         success: false,
         msg: "Could not register service for student. Try again.",
       };
     }
-
     return {
       success: true,
       msg: "All registration processes completed successfully.",
@@ -78,17 +70,47 @@ export const getStudent = async (studentId, models) => {
 
 // Get all students
 export const allStudents = async (models) => {
-  return await models.studentModel.findAll();
+  try {
+    const students = await models.studentModel.findAll({
+      include: [
+        {
+          model: models.studentChosenService,
+          as: "chosenServices",
+          attributes: [
+            "serviceTypeId",
+            "startedClass", 
+          ],
+          include: [
+            {
+              model: models.serviceModels,
+              as: "serviceInfo",
+              attributes: ["serviceType"], 
+            },
+          ],
+        },
+      ],
+      order: [["createdAt", "DESC"]],
+    });
+    return { success: true, data: students };
+  } catch (error) {
+    console.error("Error fetching students:", error.message);
+    return { success: false, error: "Failed to fetch students." };
+  }
 };
 
+
+
 // Count all registered students
-export const countStudents = async (models) => {
+export const countCurrentYearStudents = async (models) => {
   try {
-    const data = await models.studentIdCounter.findAll();
+    const currentYear = new Date().getFullYear();
+    const data = await models.studentIdCounter.findOne({
+      where: { year: currentYear },
+    });
     if (!data) {
       return {
         success: false,
-        msg: "Could not fetch data",
+        msg: "No data found for the current year.",
       };
     }
     return {
@@ -102,6 +124,7 @@ export const countStudents = async (models) => {
     };
   }
 };
+
 
 // Get students scheduled for tomorrow
 export const getStudentsScheduledForTomorrow = async (models) => {
@@ -141,9 +164,9 @@ export const getStudentsScheduledForTomorrow = async (models) => {
 // Get students who have completed theory
 export const fetchCompletedStudents = async (models) => {
   try {
-    const { registeredSelectedService, studentModel } = models;
+    const { studentChosenService, studentModel } = models;
 
-    const completedStudents = await registeredSelectedService.findAll({
+    const completedStudents = await studentChosenService.findAll({
       where: {
         classCompleted: "true",
         practicalStatus: "not started",
@@ -172,6 +195,93 @@ export const fetchCompletedStudents = async (models) => {
     return {
       success: false,
       error: error.message || "Failed to fetch students who completed class.",
+    };
+  }
+};
+
+
+
+//getting students who have not started their practicals
+export const getStudentsNotStartedPracticalService = async () => {
+  try {
+    const { studentModel, studentChosenService } = tenantContext.models;
+    const students = await studentModel.findAll({
+      include: [
+        {
+          model: studentChosenService,
+          where: {
+            classCompleted: "true", // string because your model stores it as STRING
+            practicalStatus: "not started",
+          },
+          attributes: [],
+        },
+      ],
+      attributes: ["studentId", "firstName", "lastName", "email", "phoneOne"],
+    });
+    return {
+      success: true,
+      data: students,
+    };
+  } catch (error) {
+    logger.error("Error fetching students who haven't started practicals:", error);
+    return {
+      success: false,
+      error: error.message || "Unable to fetch students",
+    };
+  }
+};
+;
+
+//getting students who have started their practical service
+export const getStudentsWithPracticalStartedService = async () => {
+  try {
+    const { studentModel, studentChosenService } = tenantContext.models;
+    const students = await studentModel.findAll({
+      include: [
+        {
+          model: studentChosenService,
+          where: {
+            classCompleted: "true", 
+            practicalStatus: "started",
+          },
+          attributes: [],
+        },
+      ],
+      attributes: ["studentId", "firstName", "lastName", "email", "phoneOne"],
+    });
+    return {
+      success: true,
+      data: students,
+    };
+  } catch (error) {
+    logger.error("Error fetching students with 'started' practicals:", error);
+    return {
+      success: false,
+      error: error.message || "Failed to retrieve students",
+    };
+  }
+};
+
+
+export const getStudentIdsAndNames = async (studentModel) => {
+  try {
+    const students = await studentModel.findAll({
+      attributes: ["studentId", "firstName", "lastName", "otherName"],
+      raw: true,
+    });
+    const formatted = students.map((student) => ({
+      studentId: student.studentId,
+      fullName: `${student.firstName} ${student.otherName || ""} ${student.lastName}`.trim(),
+    }));
+    return {
+      success: true,
+      data: formatted,
+    };
+  } catch (error) {
+    logger.error("Error in getStudentIdsAndNames:", error.message);
+    return {
+      success: false,
+      error: error.message,
     };
   }
 };

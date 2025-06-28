@@ -9,7 +9,7 @@ import recordFuel from "./recordfuelLoad.js";
 import carDocumentSchema from "./carDocuments.js";
 import bookSlotModel from "./bookSlots.js";
 import timeSlotModel from "./timeSlots.js";
-import studentRegisteredService from "./registeredStudentChosenService.js";
+import studentRegisteredService from "./StudentChosenService.js";
 import UserModel from "./userModel.js";
 import TenantModel from "./tenantModel.js";
 
@@ -26,20 +26,65 @@ export const registerModels = (sequelize) => {
   const carDocModel = carDocumentSchema(sequelize);
   const bookings = bookSlotModel(sequelize);
   const timeSlots = timeSlotModel(sequelize);
-  const registeredSelectedService = studentRegisteredService(sequelize);
+  const studentChosenService = studentRegisteredService(sequelize);
 
   // Define relationships
-  bookings.belongsTo(timeSlots, { foreignKey: "timeSlotId", targetKey: "timeSlotId" });
-  timeSlots.hasMany(bookings, { foreignKey: "timeSlotId", sourceKey: "timeSlotId" });
+  bookings.belongsTo(timeSlots, {
+    foreignKey: "timeSlotId",
+    targetKey: "timeSlotId",
+  });
+  timeSlots.hasMany(bookings, {
+    foreignKey: "timeSlotId",
+    sourceKey: "timeSlotId",
+  });
 
-  bookings.belongsTo(studentModel, { foreignKey: "studentId", targetKey: "studentId" });
-  studentModel.hasMany(bookings, { foreignKey: "studentId", sourceKey: "studentId" });
+  bookings.belongsTo(studentModel, {
+    foreignKey: "studentId",
+    targetKey: "studentId",
+  });
+  studentModel.hasMany(bookings, {
+    foreignKey: "studentId",
+    sourceKey: "studentId",
+  });
 
-  bookings.belongsTo(instructorModel, { foreignKey: "driverId", targetKey: "staffId", as: "Staff" });
-  instructorModel.hasMany(bookings, { foreignKey: "driverId", sourceKey: "staffId", as: "StaffBookings" });
+  bookings.belongsTo(instructorModel, {
+    foreignKey: "driverId",
+    targetKey: "staffId",
+    as: "Staff",
+  });
+  instructorModel.hasMany(bookings, {
+    foreignKey: "driverId",
+    sourceKey: "staffId",
+    as: "StaffBookings",
+  });
 
-  registeredSelectedService.belongsTo(studentModel, { foreignKey: "studentId", targetKey: "studentId" });
-  studentModel.hasMany(registeredSelectedService, { foreignKey: "studentId", sourceKey: "studentId" });
+  studentChosenService.belongsTo(studentModel, {
+    foreignKey: "studentId",
+    targetKey: "studentId",
+  });
+studentModel.hasMany(studentChosenService, {
+  foreignKey: "studentId",
+  sourceKey: "studentId",
+  as: "chosenServices", // <-- this is the alias you must use
+});
+
+paymentModel.belongsTo(studentModel, {
+  foreignKey: "paidBy",     
+  targetKey: "studentId",   
+  as: "student",            
+});
+
+studentChosenService.belongsTo(serviceModels, {
+  foreignKey: "serviceTypeId",
+  targetKey: "serviceId",
+  as: "serviceInfo",
+});
+
+ studentModel.hasMany(paymentModel, {
+  foreignKey: "paidBy",
+  sourceKey: "studentId",
+});
+
 
   return {
     studentModel,
@@ -52,7 +97,7 @@ export const registerModels = (sequelize) => {
     carDocModel,
     timeSlots,
     bookings,
-    registeredSelectedService,
+    studentChosenService,
   };
 };
 
@@ -62,8 +107,14 @@ export const registerAccessModels = (sequelize) => {
   userModel = UserModel(sequelize);
   tenantModel = TenantModel(sequelize);
 
-  userModel.belongsTo(tenantModel, { foreignKey: "tenantId", targetKey: "tenantId" });
-  tenantModel.hasMany(userModel, { foreignKey: "tenantId", sourceKey: "tenantId" });
+  userModel.belongsTo(tenantModel, {
+    foreignKey: "tenantId",
+    targetKey: "tenantId",
+  });
+  tenantModel.hasMany(userModel, {
+    foreignKey: "tenantId",
+    sourceKey: "tenantId",
+  });
 
   return { userModel, tenantModel };
 };

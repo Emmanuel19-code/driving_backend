@@ -1,3 +1,5 @@
+import logger from "../config/logger.js";
+
 export const findInstructorByEmail = async (tenantContext, email) => {
   const { instructorModel } = tenantContext.models;
   return await instructorModel.findOne({ where: { email } });
@@ -21,6 +23,7 @@ export const createInstructor = async (tenantContext, instructorData) => {
       data: instructor,
     };
   } catch (error) {
+    logger.error(error)
     return {
       success: false,
       msg: "An error occurred while adding instructor.",
@@ -28,3 +31,16 @@ export const createInstructor = async (tenantContext, instructorData) => {
     };
   }
 };
+
+export const totalInstructors = async (tenantContext) =>{
+  try {
+    
+  } catch (error) {
+    logger.error(error)
+    return {
+      success: false,
+      msg: "An error occurred while adding instructor.",
+      error: error.message || "Unknown error.",
+    };
+  }
+}

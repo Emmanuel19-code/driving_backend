@@ -3,6 +3,8 @@ import {
   addNewService,
   deleteServices,
   getServices,
+  getServicesIdAndName,
+  updateService,
 } from "../services/serviceOffered.js";
 import { serviceValidate } from "../validations/serviceOffered.js";
 
@@ -52,4 +54,66 @@ export const deleteRegisteredService = async (req, res) => {
     logger.error("❌ Error deleting service:", error);
     return res.status(500).json({ success: false, error: "Internal server error" });
   }
+};
+
+export const updateServiceController = async (req, res) => {
+  const { tenantContext } = req;
+  const { serviceId } = req.params;
+  const updates = req.body;
+  
+  if (!serviceId) {
+    return res.status(400).json({
+      success: false,
+      error: "Missing serviceId in request params",
+    });
+  }
+  if (!updates || typeof updates !== "object") {
+    return res.status(400).json({
+      success: false,
+      error: "Invalid or missing update data in request body",
+    });
+  }
+  const allowedFields = [
+    "serviceType",
+    "fee",
+    "totalDuration",
+    "noOfDaysInClass",
+    "noOfPracticalHours",
+    "noOfTimesWeekly",
+    "allowedDays",
+    "serviceDescription",
+  ];
+  const filteredUpdates = {};
+  for (const key of allowedFields) {
+    if (updates[key] !== undefined) {
+      filteredUpdates[key] = updates[key];
+    }
+  }
+  const result = await updateService(tenantContext, serviceId, filteredUpdates);
+  if (!result.success) {
+    return res.status(400).json({
+      success: false,
+      error: result.error || "Failed to update service",
+    });
+  }
+  return res.status(200).json({
+    success: true,
+    data: result.data,
+  });
+};
+
+
+export const getServicesIdAndNameController = async (req, res) => {
+  const tenantContext = req.tenantContext;
+  const result = await getServicesIdAndName(tenantContext);
+  if (!result.success) {
+    return res.status(500).json({
+      success: false,
+      error: result.error,
+    });
+  }
+  return res.status(200).json({
+    success: true,
+    data: result.data,
+  });
 };

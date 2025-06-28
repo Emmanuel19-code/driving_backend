@@ -12,16 +12,24 @@ const studentRegisteredService = (sequelize) => {
         type: DataTypes.STRING,
         allowNull: false,
       },
+      startedClass:{
+        type:DataTypes.STRING,
+        defaultValue:"not_started"
+      },
       classCompleted: {
         type: DataTypes.STRING,
-        defaultValue: false,
+        defaultValue: "not_completed",
       },
       totalDurationForService: {
         type: DataTypes.STRING,
       },
+      startedPractical:{
+        type:DataTypes.STRING,
+        defaultValue:"not_started"
+      },
       practicalStatus: {
         type: DataTypes.STRING,
-        defaultValue: "not started",
+        defaultValue: "not_completed",
       },
       noOfDaysInClass: {
         type: DataTypes.STRING,

@@ -1,4 +1,5 @@
 import { col, fn, Op } from "sequelize";
+import logger from "../config/logger.js";
 
 export const findCar = async (tenantContext, value) => {
   const { carModel } = tenantContext.models;
@@ -183,5 +184,55 @@ export const createCarDocument = async (tenantContext, value) => {
     };
   } catch (error) {
     return { success: false, message: error.message };
+  }
+};
+
+
+export const getFuelRecords = async (tenantContext, startDate, endDate) => {
+  try {
+    const { fuelmodel } = tenantContext.models;
+    const whereClause = {};
+    if (startDate && endDate) {
+      const start = new Date(startDate);
+      const end = new Date(new Date(endDate).setHours(23, 59, 59, 999)); // include full day
+      whereClause.createdAt = {
+        [Op.between]: [start, end],
+      };
+    } else if (startDate) {
+      whereClause.createdAt = {
+        [Op.gte]: new Date(startDate),
+      };
+    } else if (endDate) {
+      whereClause.createdAt = {
+        [Op.lte]: new Date(new Date(endDate).setHours(23, 59, 59, 999)),
+      };
+    }
+    const records = await fuelmodel.findAll({
+      where: whereClause,
+      order: [["createdAt", "DESC"]],
+    });
+    return { success: true, data: records };
+  } catch (error) {
+    logger.error(error);
+    return { success: false, error: error.message };
+  }
+};
+
+
+export const getAllCars = async (tenantContext) => {
+  const { carModel } = tenantContext.models;
+  try {
+    const cars = await carModel.findAll({
+      order: [["createdAt", "DESC"]],
+    });
+    return {
+      success: true,
+      data: cars,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      error: error.message || "Failed to fetch cars.",
+    };
   }
 };

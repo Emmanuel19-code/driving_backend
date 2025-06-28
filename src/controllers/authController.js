@@ -9,7 +9,7 @@ export const accessSystem = async (req, res) => {
       error: "Email and password are required",
     });
   }
-  const response = await loginUserService({ userName, password });
+  const response = await loginUserService({ userName, password },res);
   if (!response.success) {
     return res.status(401).json({
       success: false,
