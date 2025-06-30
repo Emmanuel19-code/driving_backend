@@ -6,6 +6,7 @@ const serviceModel = (sequelize) => {
     {
       serviceId: {
         type: DataTypes.STRING,
+        primaryKey: true,
         //allowNull: false,
         // unique: true,
       },
@@ -31,9 +32,9 @@ const serviceModel = (sequelize) => {
       allowedDays: {
         type: DataTypes.STRING,
       },
-      noOfTimesWeekly:{
-        type:DataTypes.INTEGER,
-        allowNull:false
+      noOfTimesWeekly: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
       },
       fee: {
         type: DataTypes.DECIMAL(10, 0),

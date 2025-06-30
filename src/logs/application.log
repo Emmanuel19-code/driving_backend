@@ -381,3 +381,16 @@ notNull Violation: Student.amountOwing cannot be null
 2025-06-17T12:15:49.776Z error Error creating bookings: TimeSlot is not associated to Booking!
 2025-06-17T13:23:10.235Z error handleAttendanceForPracticals error: studentChosenService is not defined
 2025-06-17T20:41:06.629Z error Error
+2025-06-28T09:31:05.014Z error Error
+2025-06-28T20:26:51.795Z error Failed to add the foreign key constraint. Missing index for constraint 'studentchosenservice_ibfk_2' in the referenced table 'services'
+2025-06-28T20:26:51.937Z error Could not connect to tenant DB: Failed to add the foreign key constraint. Missing index for constraint 'studentchosenservice_ibfk_2' in the referenced table 'services'
+2025-06-28T20:28:49.580Z error Login error: secretOrPrivateKey must have a value
+2025-06-28T20:34:11.932Z error Login error: secretOrPrivateKey must have a value
+2025-06-28T20:34:22.907Z error Failed to add the foreign key constraint. Missing index for constraint 'studentchosenservice_ibfk_2' in the referenced table 'services'
+2025-06-28T20:34:22.911Z error [TENANT ERROR] DriveSafe Academy: Could not connect to tenant DB: Failed to add the foreign key constraint. Missing index for constraint 'studentchosenservice_ibfk_2' in the referenced table 'services'
+2025-06-28T20:35:37.603Z error Failed to add the foreign key constraint. Missing index for constraint 'studentchosenservice_ibfk_2' in the referenced table 'services'
+2025-06-28T20:35:37.878Z error Could not connect to tenant DB: Failed to add the foreign key constraint. Missing index for constraint 'studentchosenservice_ibfk_2' in the referenced table 'services'
+2025-06-28T20:35:38.173Z error Failed to add the foreign key constraint. Missing index for constraint 'studentchosenservice_ibfk_2' in the referenced table 'services'
+2025-06-28T20:35:38.175Z error Could not connect to tenant DB: Failed to add the foreign key constraint. Missing index for constraint 'studentchosenservice_ibfk_2' in the referenced table 'services'
+2025-06-28T20:45:17.796Z error Failed to add the foreign key constraint. Missing index for constraint 'studentchosenservice_ibfk_2' in the referenced table 'services'
+2025-06-28T20:45:17.802Z error [TENANT ERROR] DriveSafe Academy: Could not connect to tenant DB: Failed to add the foreign key constraint. Missing index for constraint 'studentchosenservice_ibfk_2' in the referenced table 'services'
