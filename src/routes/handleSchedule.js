@@ -6,7 +6,7 @@ import { tenantContextMiddleware } from "../middlewares/tenantContextMiddleWare.
 const router = express.Router();
 
 
-router.post("/generate",authMiddleware,tenantContextMiddleware,generateSchedule)
+router.post("/generate_schedules",authMiddleware,tenantContextMiddleware,generateSchedule)
 router.get("/generated_slots",authMiddleware,tenantContextMiddleware,allGeneratedTimes)
 router.post("/allocate_slot",authMiddleware,tenantContextMiddleware,createBookings)
 router.get("/all_bookings",authMiddleware,tenantContextMiddleware,fetchAllBookedSlots)

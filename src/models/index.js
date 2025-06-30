@@ -12,6 +12,7 @@ import timeSlotModel from "./timeSlots.js";
 import studentRegisteredService from "./StudentChosenService.js";
 import UserModel from "./userModel.js";
 import TenantModel from "./tenantModel.js";
+import expenseModel from "./expense.js";
 
 export const registerModels = (sequelize) => {
   const StudentIdCounter = StudentIdCounterModel(sequelize);
@@ -27,7 +28,7 @@ export const registerModels = (sequelize) => {
   const bookings = bookSlotModel(sequelize);
   const timeSlots = timeSlotModel(sequelize);
   const studentChosenService = studentRegisteredService(sequelize);
-
+  const expense = expenseModel(sequelize)
   // Define relationships
   bookings.belongsTo(timeSlots, {
     foreignKey: "timeSlotId",
@@ -98,6 +99,7 @@ studentChosenService.belongsTo(serviceModels, {
     timeSlots,
     bookings,
     studentChosenService,
+    expense
   };
 };
 

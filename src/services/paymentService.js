@@ -151,5 +151,25 @@ export const getTotalPaymentsCurrentYear = async (tenantContext) => {
 };
 
 
+export const getAmountYetToBeReceived = async (tenantContext) => {
+  try {
+    const { studentModel } = tenantContext.models;
+    const result = await studentModel.findOne({
+      attributes: [[fn("SUM", col("amountOwing")), "totalAmountOwing"]],
+      raw: true,
+    });
+    return {
+      success: true,
+      data: parseFloat(result.totalAmountOwing || 0).toFixed(2),
+    };
+  } catch (error) {
+    logger.error("Error fetching amount yet to be received:", error);
+    return {
+      success: false,
+      error: error.message || "Failed to calculate amount yet to be received",
+    };
+  }
+};
+
 
 

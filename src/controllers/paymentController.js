@@ -1,5 +1,5 @@
 import logger from "../config/logger.js";
-import { completingPayment, getAllMoneyReceived, getTotalPaymentsCurrentYear } from "../services/paymentService.js";
+import { completingPayment, getAllMoneyReceived, getAmountYetToBeReceived, getTotalPaymentsCurrentYear } from "../services/paymentService.js";
 import { paymentSchema } from "../validations/payment.js";
 
 export const makePayment = async (req, res) => {
@@ -71,3 +71,13 @@ try {
     });
   }
 }
+
+
+export const getAmountYetToBeReceivedController = async (req, res) => {
+  const tenantContext = req.tenantContext;
+  const response = await getAmountYetToBeReceived(tenantContext);
+  if (!response.success) {
+    return res.status(500).json({ success: false, error: response.error });
+  }
+  return res.status(200).json({ success: true, data: response.data });
+};

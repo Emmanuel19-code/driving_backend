@@ -394,3 +394,19 @@ notNull Violation: Student.amountOwing cannot be null
 2025-06-28T20:35:38.175Z error Could not connect to tenant DB: Failed to add the foreign key constraint. Missing index for constraint 'studentchosenservice_ibfk_2' in the referenced table 'services'
 2025-06-28T20:45:17.796Z error Failed to add the foreign key constraint. Missing index for constraint 'studentchosenservice_ibfk_2' in the referenced table 'services'
 2025-06-28T20:45:17.802Z error [TENANT ERROR] DriveSafe Academy: Could not connect to tenant DB: Failed to add the foreign key constraint. Missing index for constraint 'studentchosenservice_ibfk_2' in the referenced table 'services'
+2025-06-30T10:21:29.492Z error jwt expired
+2025-06-30T10:21:29.510Z error jwt expired
+2025-06-30T10:41:21.644Z error jwt expired
+2025-06-30T11:49:53.553Z error Cannot read properties of undefined (reading 'findAll')
+2025-06-30T11:49:53.577Z error Report Summary Error: Failed to generate report: Cannot read properties of undefined (reading 'findAll')
+2025-06-30T13:26:15.198Z error jwt expired
+2025-06-30T13:36:10.132Z error jwt expired
+2025-06-30T13:36:48.270Z error Error generating time slots: timeSlots is not defined
+2025-06-30T13:38:52.313Z error Error generating time slots: timeSlots is not defined
+2025-06-30T15:56:29.373Z error jwt expired
+2025-06-30T15:56:29.389Z error jwt expired
+2025-06-30T15:56:29.415Z error jwt expired
+2025-06-30T16:20:34.044Z error Cannot read properties of undefined (reading 'define')
+2025-06-30T16:20:34.052Z error [TENANT ERROR] AllWheels Academy: Could not connect to tenant DB: Cannot read properties of undefined (reading 'define')
+2025-06-30T16:20:34.075Z error Cannot read properties of undefined (reading 'define')
+2025-06-30T16:20:34.080Z error [TENANT ERROR] DriveSafe Academy: Could not connect to tenant DB: Cannot read properties of undefined (reading 'define')

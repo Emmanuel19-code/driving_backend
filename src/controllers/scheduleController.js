@@ -4,17 +4,19 @@ import { bookingSchema } from "../validations/practical.js";
 //generate the timeSlots
 export const generateSchedule = async (req, res) => {
   try {
-    const { days, startTime, endTime } = req.body;
-    // Validate input
-    if (!days || !startTime || !endTime) {
+    const tenantContext = req.tenantContext;
+    const { days, defaultStartTime, defaultEndTime, customTimes = {} } = req.body;
+    if (!days || !defaultStartTime || !defaultEndTime) {
       return res.status(400).json({
-        message: "Please provide 'days', 'startTime', and 'endTime'.",
+        message: "Please provide 'days', 'defaultStartTime', and 'defaultEndTime'.",
       });
     }
     const result = await generateAllTimeSlots({
       days,
-      startTime,
-      endTime,
+      defaultStartTime,
+      defaultEndTime,
+      customTimes,
+      tenantContext,
     });
     return res.status(201).json(result);
   } catch (error) {
@@ -25,10 +27,12 @@ export const generateSchedule = async (req, res) => {
   }
 };
 
+
 //getting all times available
 export const allGeneratedTimes = async (req, res) => {
   try {
-    const result = await getAllTimeSlots();
+    const tenantContext = req.tenantContext;
+    const result = await getAllTimeSlots(tenantContext);
     if (!result.success) {
       return res.status(409).json({ error: result.error });
     }
@@ -43,7 +47,8 @@ export const allGeneratedTimes = async (req, res) => {
 //booking students for practicals
 export const createBookings = async (req, res) => {
   try {
-    const { error, value } = bookingSchema.validate(req.body);
+     const tenantContext = req.tenantContext;
+    const { error, value } = bookingSchema.validate(req.body,tenantContext);
     if (error) {
       return res.status(400).json({
         success: false,
@@ -108,7 +113,8 @@ export const markAttendance = async (req, res) => {
 //getting all booked sessions
 export const fetchAllBookedSlots = async (req, res) => {
   try {
-    const result = await getAllPracticalSessions();
+    const tenantContext = req.tenantContext;
+    const result = await getAllPracticalSessions(tenantContext);
     if (!result.success) {
       return res.status(500).json({ success: false, error: result.error });
     }
